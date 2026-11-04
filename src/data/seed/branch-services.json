@@ -1,0 +1,1080 @@
+[
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "creative-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dipatiukur",
+    "service_slug": "cornrow",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "creative-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "dago",
+    "service_slug": "cornrow",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "peek-a-boo",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "highlight",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "fashion-colour",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "down-perm",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "perming",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "cihampelas",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "podomoro",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "pasgar-tki-2",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "ujung-berung",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "peek-a-boo",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "highlight",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "fashion-colour",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "down-perm",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "perming",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "peta",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "peek-a-boo",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "highlight",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "fashion-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "down-perm",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "perming",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "karawaci",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "trim",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "shaver",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "razor",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "shaving",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "basic-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "peek-a-boo",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "highlight",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "fashion-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "styling",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "creambath",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "down-perm",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "perming",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "citra-raya",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "peek-a-boo",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "highlight",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "fashion-colour",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "down-perm",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "perming",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "graha-raya",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "trim",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "shaver",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "razor",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "shaving",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "basic-colour",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "peek-a-boo",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "highlight",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "fashion-colour",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "creative-colour",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "styling",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "creambath",
+    "status": "available",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "down-perm",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "perming",
+    "status": "soon",
+    "price_override_min": null,
+    "price_override_max": null
+  },
+  {
+    "branch_slug": "condet",
+    "service_slug": "cornrow",
+    "status": "unavailable",
+    "price_override_min": null,
+    "price_override_max": null
+  }
+]

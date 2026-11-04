@@ -1,0 +1,50 @@
+[
+  {
+    "question": "Jam buka Golden Barber?",
+    "answer": "Semua cabang buka setiap hari pukul 08.00–23.00 WIB.",
+    "is_active": true,
+    "sort_order": 1
+  },
+  {
+    "question": "Bagaimana cara booking?",
+    "answer": "Klik tombol \"Booking via WhatsApp\", pilih cabang dan barber, lalu admin akan mengonfirmasi slot.",
+    "is_active": true,
+    "sort_order": 2
+  },
+  {
+    "question": "Apa yang sudah termasuk dalam harga haircut?",
+    "answer": "Konsultasi, hairwash 1–2x, pengaplikasian produk jika perlu, dan hair styling.",
+    "is_active": true,
+    "sort_order": 3
+  },
+  {
+    "question": "Apa itu \"By Barber\"?",
+    "answer": "Anda akan dilayani barber yang sedang tersedia saat itu.",
+    "is_active": true,
+    "sort_order": 4
+  },
+  {
+    "question": "Kenapa harga tiap barber berbeda?",
+    "answer": "Harga menyesuaikan pengalaman dan tingkat keahlian masing-masing barber.",
+    "is_active": true,
+    "sort_order": 5
+  },
+  {
+    "question": "Apa arti \"Segera Hadir\" pada layanan?",
+    "answer": "Layanan tersebut sedang disiapkan di cabang itu dan belum bisa dipesan.",
+    "is_active": true,
+    "sort_order": 6
+  },
+  {
+    "question": "Apakah bisa datang tanpa booking (walk-in)?",
+    "answer": "MENUNGGU KONFIRMASI PEMILIK",
+    "is_active": false,
+    "sort_order": 7
+  },
+  {
+    "question": "Metode pembayaran apa saja yang diterima?",
+    "answer": "MENUNGGU KONFIRMASI PEMILIK",
+    "is_active": false,
+    "sort_order": 8
+  }
+]

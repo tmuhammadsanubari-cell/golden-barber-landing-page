@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "title": "Choose Your Haircut. The Winner's Cut.",
+    "subtitle": "Berawal dari Dipatiukur, Bandung — kini hadir di 11 cabang di Bandung Raya & Jabodetabek. Buka setiap hari 08.00–23.00.",
+    "primary_cta": "Booking via WhatsApp",
+    "secondary_cta": "Cari Cabang Terdekat",
+    "image_path": "/images/dummy/hero.webp",
+    "image_is_placeholder": true
+  },
+  "whatsapp_number": "6281214807192",
+  "whatsapp_templates": {
+    "general": "Halo Golden Barber, saya mau booking potong rambut. Cabang yang tersedia di dekat saya apa saja ya?",
+    "branch": "Halo Golden Barber {nama_cabang}, saya mau booking potong rambut. Apakah ada slot hari ini?",
+    "barber": "Halo Golden Barber {nama_cabang}, saya mau booking {layanan} dengan barber {nama_barber} ({harga}). Kapan slot yang tersedia?",
+    "service": "Halo Golden Barber, saya mau tanya layanan {nama_layanan} di cabang {nama_cabang}.",
+    "branch_no_pricelist": "Halo Golden Barber {nama_cabang}, boleh minta info pricelist dan alamat lengkap cabang ini?",
+    "academy": "Halo Golden Academy, saya {nama} baru saja mengisi form minat di website. Saya ingin info kelas.",
+    "partnership": "Halo Golden Barber, saya {nama} baru saja mengisi form kemitraan di website. Saya ingin info kemitraan."
+  },
+  "social_links": {
+    "instagram": "https://www.instagram.com/goldenbarber_id/",
+    "threads": "https://www.threads.com/@goldenbarber_id",
+    "linktree": "https://linktr.ee/Goldenbarberindonesia",
+    "academy_instagram": "https://www.instagram.com/goldenacademybandung/"
+  },
+  "google_rating": {
+    "rating": 4.9,
+    "review_count": 3340,
+    "scope": "Cabang Dipatiukur",
+    "updated_at": "2026-11-01"
+  },
+  "about_highlights": [
+    {
+      "icon": "message-circle",
+      "title": "Konsultasi Gratis",
+      "description": "Setiap potongan diawali konsultasi gaya rambut sesuai bentuk wajah."
+    },
+    {
+      "icon": "droplets",
+      "title": "Hairwash & Styling Termasuk",
+      "description": "Harga haircut sudah termasuk hairwash 1–2x dan hair styling."
+    },
+    {
+      "icon": "clock",
+      "title": "Buka Sampai Malam",
+      "description": "Semua cabang buka setiap hari pukul 08.00–23.00."
+    },
+    {
+      "icon": "users",
+      "title": "Pilih Barbermu",
+      "description": "Harga transparan per barber — pilih sesuai gaya dan budget."
+    },
+    {
+      "icon": "trophy",
+      "title": "Dipercaya Pemain Persib",
+      "description": "Pernah diliput sebagai barbershop langganan pemain Persib Bandung."
+    },
+    {
+      "icon": "heart-handshake",
+      "title": "Peduli Sesama",
+      "description": "Pernah menggelar program cukur gratis untuk 1.134 orang."
+    }
+  ],
+  "haircut_includes": [
+    "Konsultasi",
+    "Hairwash 1–2x",
+    "Pengaplikasian produk jika perlu",
+    "Hair Styling"
+  ],
+  "academy_section": {
+    "title": "Golden Academy — Tempat Belajar Nyukur",
+    "description": "Ingin jadi barber profesional? Golden Academy membuka kesempatan belajar mencukur langsung dari tim Golden Barber. Isi form minat dan tim kami akan menghubungimu dengan info kelas terbaru.",
+    "is_details_available": false
+  },
+  "partnership_section": {
+    "title": "Buka Golden Barber di Kotamu",
+    "description": "Dari satu barbershop di Dipatiukur, Golden Barber kini hadir di 11 cabang di Bandung Raya dan Jabodetabek. Tertarik bermitra? Kirim minatmu dan tim manajemen akan menghubungi."
+  },
+  "media_mentions": [
+    {
+      "title": "Ini Dia Barbershop Langganan Pemain Persib",
+      "outlet": "Bola.net",
+      "year": 2016,
+      "url": "https://www.bola.net/bolatainment/ini-dia-barbershop-langganan-pemain-persib-3ec520.html"
+    }
+  ],
+  "seo_defaults": {
+    "title": "Golden Barber — Barbershop di Bandung & Jabodetabek | 11 Cabang",
+    "description": "Golden Barber: barbershop asal Dipatiukur Bandung, kini 11 cabang. Lihat pricelist per barber dan booking langsung via WhatsApp. Buka setiap hari 08.00–23.00.",
+    "og_image": "/brand/og-default.jpg"
+  }
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Messy Fringe w/ Korean Taper",
+    "description": "Poni bertekstur natural dengan gradasi Korean Taper di samping.",
+    "image_path": "/images/dummy/galeri-1.webp",
+    "alt_text": "Contoh model rambut Messy Fringe w/ Korean Taper",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 1
+  },
+  {
+    "title": "French Crop",
+    "description": "Poni pendek lurus dengan sisi tipis, rapi dan mudah diatur.",
+    "image_path": "/images/dummy/galeri-2.webp",
+    "alt_text": "Contoh model rambut French Crop",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 2
+  },
+  {
+    "title": "Two Block",
+    "description": "Bagian atas panjang, sisi dan belakang dipotong pendek.",
+    "image_path": "/images/dummy/galeri-3.webp",
+    "alt_text": "Contoh model rambut Two Block",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 3
+  },
+  {
+    "title": "Comma Hair",
+    "description": "Poni melengkung seperti tanda koma, khas gaya Korea.",
+    "image_path": "/images/dummy/galeri-4.webp",
+    "alt_text": "Contoh model rambut Comma Hair",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 4
+  },
+  {
+    "title": "Buzz Cut",
+    "description": "Potongan sangat pendek merata, praktis untuk cuaca panas.",
+    "image_path": "/images/dummy/galeri-5.webp",
+    "alt_text": "Contoh model rambut Buzz Cut",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 5
+  },
+  {
+    "title": "Mullet",
+    "description": "Depan dan samping pendek, belakang dibiarkan lebih panjang.",
+    "image_path": "/images/dummy/galeri-6.webp",
+    "alt_text": "Contoh model rambut Mullet",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 6
+  },
+  {
+    "title": "Side Part",
+    "description": "Belahan samping klasik dengan tampilan rapi.",
+    "image_path": "/images/dummy/galeri-7.webp",
+    "alt_text": "Contoh model rambut Side Part",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 7
+  },
+  {
+    "title": "Textured Crop",
+    "description": "Atas bertekstur dengan fade di samping.",
+    "image_path": "/images/dummy/galeri-8.webp",
+    "alt_text": "Contoh model rambut Textured Crop",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 8
+  }
+]

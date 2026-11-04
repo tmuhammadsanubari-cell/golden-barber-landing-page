@@ -1,0 +1,32 @@
+[
+  {
+    "branch_slug": "dipatiukur",
+    "customer_name": "Contoh Pelanggan A.",
+    "rating": 5,
+    "source": "langsung",
+    "content": "CONTOH KONTEN — ganti dengan ulasan asli sebelum launch.",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 1
+  },
+  {
+    "branch_slug": "dago",
+    "customer_name": "Contoh Pelanggan B.",
+    "rating": 5,
+    "source": "langsung",
+    "content": "CONTOH KONTEN — ganti dengan ulasan asli sebelum launch.",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 2
+  },
+  {
+    "branch_slug": "karawaci",
+    "customer_name": "Contoh Pelanggan C.",
+    "rating": 5,
+    "source": "langsung",
+    "content": "CONTOH KONTEN — ganti dengan ulasan asli sebelum launch.",
+    "is_placeholder": true,
+    "is_active": true,
+    "sort_order": 3
+  }
+]
