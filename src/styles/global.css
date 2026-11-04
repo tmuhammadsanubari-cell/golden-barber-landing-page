@@ -98,6 +98,7 @@
     letter-spacing: -0.01em;
     color: var(--color-ink);
     margin: 0;
+    text-wrap: balance;
   }
   .cat {
     font-family: var(--font-display);
@@ -219,7 +220,7 @@
 
   .tab {
     min-height: 48px;
-    padding: 0 22px;
+    padding: 0 8px;
     border: 0;
     border-bottom: 3px solid transparent;
     background: transparent;
@@ -584,6 +585,7 @@
       padding: 0 14px;
     }
     .tab {
+      padding: 0 22px;
       font-size: 17px;
     }
     .why-list {

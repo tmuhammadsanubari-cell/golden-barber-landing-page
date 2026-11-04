@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import Badge from '@/components/ui/Badge';
+import Icon from '@/components/ui/Icon';
+import Price from '@/components/ui/Price';
+import { formatHours, formatRating } from '@/lib/format';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Barber, Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  settings: SiteSettings;
+  branchCount: number;
+  flagship: Branch;
+  flagshipBarbers: Barber[];
+}
+
+const { settings, branchCount, flagship, flagshipBarbers } = Astro.props;
+const { hero, google_rating: rating } = settings;
+
+// "Choose Your Haircut. The Winner's Cut." → kalimat kedua diberi warna aksen.
+const breakAt = hero.title.indexOf('. ') + 1;
+const titleStart = hero.title.slice(0, breakAt);
+const titleEnd = hero.title.slice(breakAt).trim();
+
+const lowestPrice = Math.min(...flagshipBarbers.map((barber) => barber.haircut_price));
+const hours = formatHours(flagship.open_time, flagship.close_time);
+const statValue = 'm-0 font-display font-extrabold leading-none';
+---
+
+<section
+  id="top"
+  class="wrap flex flex-col gap-5 pt-8 pb-10 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:pt-[72px] lg:pb-[88px]"
+>
+  <div class="contents lg:flex lg:flex-col lg:gap-7">
+    <p class="lbl m-0 flex items-center gap-2.5 !text-[11px] lg:gap-3.5 lg:!text-[13px]">
+      Choose Your Haircut
+      <span aria-hidden="true" class="h-[13px] w-px bg-sep lg:h-4"></span>
+      The Winner's Cut
+    </p>
+    <h1
+      class="m-0 font-display text-[40px] leading-[1.04] font-extrabold tracking-[-0.02em] xl:text-[76px] xl:leading-none"
+    >
+      {titleStart}<br class="hidden lg:block" />
+      <span class="text-accent">{titleEnd}</span>
+    </h1>
+    <p class="body-text !text-[17px] lg:max-w-[580px] lg:!text-xl">{hero.subtitle}</p>
+    <div class="flex flex-col gap-2.5 lg:flex-row lg:flex-wrap lg:gap-3.5">
+      <a class="btn btn-l lg:!px-7" {...whatsAppLinkProps({ context: 'general', settings })}>
+        <Icon name="whatsapp" size={22} />
+        {hero.primary_cta}
+      </a>
+      <a class="btn-o btn-l lg:!px-[26px]" href="#cabang">
+        <Icon name="pin" />
+        {hero.secondary_cta}
+      </a>
+    </div>
+    <dl
+      class="order-last m-0 grid grid-cols-2 border-y border-line lg:order-none lg:mt-3 lg:flex lg:items-stretch lg:gap-8 lg:border-b-0 lg:pt-7"
+    >
+      <div class="flex flex-col-reverse gap-1 py-4 lg:gap-1.5 lg:py-0">
+        <dt class="lbl !text-[11px] lg:!text-xs">Cabang</dt>
+        <dd class:list={[statValue, 'text-[28px] lg:text-4xl']}>{branchCount}</dd>
+      </div>
+      <div aria-hidden="true" class="hidden w-px bg-line lg:block"></div>
+      <div
+        class="flex flex-col-reverse gap-1 border-l border-line py-4 pl-5 lg:gap-1.5 lg:border-l-0 lg:py-0 lg:pl-0"
+      >
+        <dt class="lbl !text-[11px] lg:!text-xs">Google Rating</dt>
+        <dd class:list={[statValue, 'text-[28px] lg:text-4xl']}>
+          {formatRating(rating.rating)}<span class="text-accent-strong">★</span>
+        </dd>
+      </div>
+      <div aria-hidden="true" class="hidden w-px bg-line lg:block"></div>
+      <div
+        class="col-span-2 flex items-center justify-between border-t border-line py-3.5 lg:flex-col-reverse lg:items-start lg:justify-start lg:gap-1.5 lg:border-t-0 lg:py-0"
+      >
+        <dt class="lbl !text-[11px] lg:!text-xs">Buka Setiap Hari</dt>
+        <dd class:list={[statValue, 'text-[22px] lg:text-4xl']}>{hours}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="relative mt-2 lg:mt-0">
+    <div class="ph relative overflow-hidden rounded-gb">
+      <Image
+        src={hero.image_path}
+        alt="Foto ilustrasi interior barbershop Golden Barber"
+        width={1000}
+        height={1240}
+        loading="eager"
+        fetchpriority="high"
+        class="h-[260px] w-full object-cover lg:h-[620px]"
+      />
+      {
+        hero.image_is_placeholder && (
+          <Badge variant="photo" className="absolute bottom-3.5 left-3.5 lg:bottom-5 lg:left-5">
+            Foto dummy · Interior cabang
+          </Badge>
+        )
+      }
+    </div>
+    {
+      flagshipBarbers.length > 0 && (
+        <div class="card absolute top-14 -left-10 hidden w-[260px] px-[22px] py-5 shadow-[0_6px_18px_rgba(43,47,47,0.08)] xl:block">
+          <p class="cat text-xl">Haircut Reguler</p>
+          <p class="lbl mt-1.5 mb-3.5 !text-[11px]">{flagship.name} · mulai</p>
+          <Price
+            value={lowestPrice}
+            className="m-0 block !text-left font-display text-[44px] leading-none font-extrabold"
+          />
+          <p class="mt-3 mb-0 text-sm leading-[1.45] text-ink-muted">
+            Termasuk konsultasi, hairwash &amp; styling.
+          </p>
+        </div>
+      )
+    }
+  </div>
+</section>

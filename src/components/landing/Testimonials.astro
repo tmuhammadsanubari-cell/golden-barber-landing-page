@@ -1,0 +1,122 @@
+---
+import Icon from '@/components/ui/Icon';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { Branch, Testimonial } from '@/types/content';
+
+interface Props {
+  items: Testimonial[];
+  branches: Branch[];
+}
+
+const { items, branches } = Astro.props;
+const branchName = (slug: string | null) =>
+  branches.find((branch) => branch.slug === slug)?.name ?? '';
+const hasPlaceholder = items.some((item) => item.is_placeholder);
+---
+
+<section aria-labelledby="tes-h" class="border-b border-line bg-alt lg:border-0 lg:bg-transparent" data-carousel>
+  <div class="wrap pt-12 pb-16 lg:py-24">
+    <SectionHeading
+      id="tes-h"
+      label="Testimoni"
+      tagline="Kata pelanggan"
+      class="mb-4 lg:mb-10"
+    >
+      Pulang rapi, balik lagi.
+      <div slot="aside" class="hidden gap-2.5 lg:flex">
+        <button type="button" class="ic !size-12" data-step="-1" aria-label="Testimoni sebelumnya">
+          <Icon name="chevron-left" />
+        </button>
+        <button type="button" class="ic !size-12" data-step="1" aria-label="Testimoni berikutnya">
+          <Icon name="chevron-right" />
+        </button>
+      </div>
+    </SectionHeading>
+
+    <div class="snap-row" data-track tabindex="0" role="group" aria-label="Daftar testimoni">
+      {
+        items.map((item) => (
+          <figure class="card m-0 flex min-h-[230px] flex-col gap-3.5 !bg-white p-[22px] lg:gap-[18px] lg:p-7">
+            <div
+              role="img"
+              aria-label={`${item.rating} dari 5 bintang`}
+              class="flex gap-[3px] text-accent-strong"
+            >
+              {Array.from({ length: item.rating }).map(() => (
+                <Icon name="star" size={18} />
+              ))}
+            </div>
+            <blockquote class="m-0 text-[17px] leading-[1.55] lg:text-lg">“{item.content}”</blockquote>
+            <figcaption class="mt-auto flex items-center justify-between gap-3 border-t border-line pt-3.5 lg:pt-4">
+              <span class="font-display text-[15px] font-bold lg:text-base">
+                {item.customer_name}
+              </span>
+              <span class="lbl !text-[11px]">{branchName(item.branch_slug)}</span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="mt-4 flex items-center justify-between lg:mt-6">
+      <div aria-hidden="true" class="flex gap-1.5 lg:gap-2" data-dots>
+        {items.map(() => <span class="h-1 w-3 rounded-sm bg-line" />)}
+      </div>
+      <div class="flex gap-2 lg:hidden">
+        <button type="button" class="ic" data-step="-1" aria-label="Testimoni sebelumnya">
+          <Icon name="chevron-left" />
+        </button>
+        <button type="button" class="ic" data-step="1" aria-label="Testimoni berikutnya">
+          <Icon name="chevron-right" />
+        </button>
+      </div>
+      {
+        hasPlaceholder && (
+          <p class="m-0 hidden text-[13px] text-ink-muted lg:block">
+            Contoh konten — ganti dengan ulasan Google asli.
+          </p>
+        )
+      }
+    </div>
+    {
+      hasPlaceholder && (
+        <p class="mt-4 mb-0 text-[13px] text-ink-muted lg:hidden">
+          Contoh konten — ganti dengan ulasan Google asli.
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const cards = [...track.children] as HTMLElement[];
+    const dots = [...root.querySelectorAll<HTMLElement>('[data-dots] > span')];
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-step]')];
+
+    const stepSize = () => cards[0]!.offsetWidth + parseFloat(getComputedStyle(track).columnGap);
+
+    const sync = () => {
+      const index = Math.round(track.scrollLeft / stepSize());
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+      dots.forEach((dot, dotIndex) => {
+        const active = dotIndex === index;
+        dot.style.width = active ? '28px' : '12px';
+        dot.style.backgroundColor = active ? 'var(--color-accent-strong)' : '';
+      });
+      for (const button of buttons) {
+        button.disabled = Number(button.dataset.step) < 0 ? track.scrollLeft <= 0 : atEnd;
+      }
+    };
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        track.scrollBy({ left: Number(button.dataset.step) * stepSize(), behavior: 'smooth' });
+      });
+    }
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  });
+</script>

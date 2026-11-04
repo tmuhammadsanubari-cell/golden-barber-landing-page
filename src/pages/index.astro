@@ -1,3 +1,69 @@
 ---
+import About from '@/components/landing/About.astro';
+import AcademySection from '@/components/landing/AcademySection.astro';
+import BranchDirectory from '@/components/landing/BranchDirectory.astro';
+import Faq from '@/components/landing/Faq.astro';
+import FloatingWhatsApp from '@/components/landing/FloatingWhatsApp.astro';
+import Footer from '@/components/landing/Footer.astro';
+import Gallery from '@/components/landing/Gallery.astro';
+import Hero from '@/components/landing/Hero.astro';
+import Navbar from '@/components/landing/Navbar.astro';
+import PartnershipSection from '@/components/landing/PartnershipSection.astro';
+import PricelistSection from '@/components/landing/PricelistSection.astro';
+import ServicesSection from '@/components/landing/ServicesSection.astro';
+import Testimonials from '@/components/landing/Testimonials.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import {
+  getBarbers,
+  getBranchServices,
+  getBranches,
+  getFaqs,
+  getGallery,
+  getServices,
+  getSettings,
+  getTestimonials,
+} from '@/lib/data';
+
+const [settings, branches, barbers, services, branchServices, faqs, gallery, testimonials] =
+  await Promise.all([
+    getSettings(),
+    getBranches(),
+    getBarbers(),
+    getServices(),
+    getBranchServices(),
+    getFaqs(),
+    getGallery(),
+    getTestimonials(),
+  ]);
+
+const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
+const flagshipBarbers = barbers.filter((barber) => barber.branch_slug === flagship.slug);
 ---
-<html lang="id"><head><meta charset="utf-8" /><title>Golden Barber</title></head><body></body></html>
+
+<BaseLayout title={settings.seo_defaults.title} description={settings.seo_defaults.description}>
+  <Navbar settings={settings} flagship={flagship} />
+  <main>
+    <Hero
+      settings={settings}
+      branchCount={branches.length}
+      flagship={flagship}
+      flagshipBarbers={flagshipBarbers}
+    />
+    <About settings={settings} flagship={flagship} />
+    <BranchDirectory settings={settings} branches={branches} />
+    <PricelistSection settings={settings} branches={branches} barbers={barbers} />
+    <ServicesSection
+      settings={settings}
+      branches={branches}
+      services={services}
+      branchServices={branchServices}
+    />
+    <Gallery items={gallery} />
+    <Testimonials items={testimonials} branches={branches} />
+    <AcademySection settings={settings} />
+    <PartnershipSection settings={settings} branches={branches} />
+    <Faq items={faqs} settings={settings} flagship={flagship} />
+  </main>
+  <Footer settings={settings} branches={branches} />
+  <FloatingWhatsApp settings={settings} />
+</BaseLayout>

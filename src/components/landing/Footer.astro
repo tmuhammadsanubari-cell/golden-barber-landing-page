@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon';
+import { formatHours } from '@/lib/format';
+import { formatPhoneDisplay, whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Branch, Region, SiteSettings } from '@/types/content';
+
+interface Props {
+  settings: SiteSettings;
+  branches: Branch[];
+}
+
+const { settings, branches } = Astro.props;
+const { social_links: social } = settings;
+const wa = whatsAppLinkProps({ context: 'general', settings });
+const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
+const handleOf = (url: string) => url.replace(/\/$/, '').split('/').pop()!.replace(/^@/, '');
+
+const regions: { key: Region; label: string }[] = [
+  { key: 'bandung_raya', label: 'Bandung Raya' },
+  { key: 'jabodetabek', label: 'Jabodetabek' },
+];
+const suffix = (branch: Branch) =>
+  branch.is_flagship ? ' (Pusat)' : branch.is_new ? ' (Baru)' : '';
+const contactLink = 'flex min-h-11 items-center gap-2.5 lg:inline-flex';
+const year = new Date().getFullYear();
+---
+
+<footer class="ft bg-dark text-white">
+  <div class="wrap pt-12 pb-24 lg:pt-[72px] lg:pb-8">
+    <div
+      class="grid grid-cols-2 gap-x-5 gap-y-7 border-b border-dark-line pb-5 lg:grid-cols-[4fr_3fr_3fr_3fr] lg:gap-10 lg:pb-12"
+    >
+      <div class="col-span-2 flex flex-col gap-5 lg:col-span-1">
+        <Image
+          src="/brand/logo-golden-barber-white.png"
+          alt="Golden Barber"
+          width={902}
+          height={136}
+          class="h-6 w-auto self-start lg:h-[34px]"
+        />
+        <p class="m-0 hidden max-w-[300px] text-[15px] leading-[1.6] text-dark-text lg:block">
+          Choose Your Haircut <span aria-hidden="true" class="text-[#6e7676]">|</span> The Winner's
+          Cut. Buka setiap hari {formatHours(flagship.open_time, flagship.close_time)}.
+        </p>
+        <a class="btn-w hidden self-start lg:inline-flex" {...wa}>Booking via WhatsApp</a>
+      </div>
+      {
+        regions.map((region) => (
+          <div>
+            <p class="lbl mt-0 mb-2.5 !text-[11px] !text-dark-text lg:mb-3.5 lg:!text-xs">
+              {region.label}
+            </p>
+            <ul class="m-0 flex list-none flex-col gap-0.5 p-0 text-[15px]">
+              {branches
+                .filter((branch) => branch.region === region.key)
+                .map((branch) => (
+                  <li>
+                    <a
+                      href={`/?cabang=${branch.slug}#harga`}
+                      data-pick-branch={branch.slug}
+                      class="inline-flex min-h-11 items-center lg:min-h-8"
+                    >
+                      {branch.name}
+                      {suffix(branch)}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))
+      }
+      <div class="col-span-2 border-t border-dark-line pt-5 lg:col-span-1 lg:border-0 lg:pt-0">
+        <p class="lbl mt-0 mb-3.5 hidden !text-xs !text-dark-text lg:block">Kontak</p>
+        <ul class="m-0 flex list-none flex-col p-0 text-[15px] lg:gap-1.5">
+          <li>
+            <a class={contactLink} {...wa}>
+              <Icon name="whatsapp" />
+              WA {formatPhoneDisplay(settings.whatsapp_number)}
+            </a>
+          </li>
+          <li>
+            <a class={contactLink} href={social.instagram} target="_blank" rel="noopener">
+              <Icon name="instagram" />
+              Instagram @{handleOf(social.instagram)}
+            </a>
+          </li>
+          <li>
+            <a class={contactLink} href={social.threads} target="_blank" rel="noopener">
+              <Icon name="threads" />
+              Threads @{handleOf(social.threads)}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="mt-4 mb-0 text-[13px] text-dark-muted lg:mt-6 lg:text-sm">
+      © {year} Golden Barber Indonesia. Hak cipta dilindungi.
+    </p>
+  </div>
+</footer>

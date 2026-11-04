@@ -1,0 +1,56 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { Barber, Branch, SiteSettings } from '@/types/content';
+import PricelistPicker from './PricelistPicker';
+
+interface Props {
+  settings: SiteSettings;
+  branches: Branch[];
+  barbers: Barber[];
+}
+
+const { settings, branches, barbers } = Astro.props;
+
+// Hanya field yang dipakai island, agar JSON props tetap kecil (PRD F-03).
+const pickerBranches = branches.map(({ slug, name, whatsapp_number, is_flagship }) => ({
+  slug,
+  name,
+  whatsapp_number,
+  is_flagship,
+}));
+const pickerBarbers = barbers.map((barber) => ({
+  branch_slug: barber.branch_slug,
+  name: barber.name,
+  is_generic: barber.is_generic,
+  haircut_price: barber.haircut_price,
+  haircut_original_price: barber.haircut_original_price,
+  long_trim_price: barber.long_trim_price,
+}));
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+---
+
+<section id="harga" aria-labelledby="harga-h">
+  <div class="wrap pt-10 pb-12 lg:pt-24 lg:pb-[120px]">
+    <SectionHeading
+      id="harga-h"
+      label="Pricelist"
+      tagline="Harga per barber"
+      class="mb-4 lg:mb-8"
+    >
+      Pilih Barbermu
+      <p slot="aside" class="body-text hidden max-w-[440px] lg:block">
+        Harga berbeda tiap barber dan tiap cabang. Pilih cabang untuk melihat pricelist-nya.
+      </p>
+    </SectionHeading>
+    <PricelistPicker
+      client:visible
+      branches={pickerBranches}
+      barbers={pickerBarbers}
+      includes={settings.haircut_includes}
+      settings={waSettings}
+    />
+  </div>
+</section>

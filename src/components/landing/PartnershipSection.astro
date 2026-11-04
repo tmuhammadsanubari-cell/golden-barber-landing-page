@@ -1,0 +1,72 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { Branch, SiteSettings } from '@/types/content';
+import LeadForm from './LeadForm';
+
+interface Props {
+  settings: SiteSettings;
+  branches: Branch[];
+}
+
+const { settings, branches } = Astro.props;
+const { partnership_section: partnership } = settings;
+const countIn = (region: Branch['region']) =>
+  branches.filter((branch) => branch.region === region).length;
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+---
+
+<section id="kemitraan" aria-labelledby="km-h" class="dk bg-dark text-white">
+  <div class="wrap grid items-start gap-6 pt-12 pb-14 lg:grid-cols-2 lg:gap-16 lg:py-[104px]">
+    <div class="flex flex-col gap-4 lg:gap-6">
+      <SectionHeading id="km-h" label="Kemitraan" tagline="Partnership" dark>
+        {partnership.title}
+      </SectionHeading>
+      <p class="body-text" style="color:#c9cece">{partnership.description}</p>
+      <div
+        class="flex items-center gap-[18px] border-y border-dark-line py-5 lg:gap-7 lg:py-7"
+      >
+        <div>
+          <p class="m-0 font-display text-[44px] leading-none font-extrabold lg:text-[56px]">1</p>
+          <p class="lbl mt-1.5 mb-0 !text-[10px] !text-dark-text lg:mt-2 lg:!text-[11px]">
+            Dipatiukur
+          </p>
+        </div>
+        <svg
+          class="h-4 w-11 flex-none text-dark-accent lg:h-5 lg:w-14"
+          viewBox="0 0 56 20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M2 10h50M44 3l8 7-8 7"></path>
+        </svg>
+        <div>
+          <p
+            class="m-0 font-display text-[44px] leading-none font-extrabold text-dark-accent lg:text-[56px]"
+          >
+            {branches.length}
+          </p>
+          <p class="lbl mt-1.5 mb-0 !text-[10px] !text-dark-text lg:mt-2 lg:!text-[11px]">
+            Cabang<span class="hidden lg:inline"> hari ini</span>
+          </p>
+        </div>
+        <div aria-hidden="true" class="hidden w-px self-stretch bg-dark-line lg:block"></div>
+        <p
+          class="m-0 ml-auto text-right text-[13px] whitespace-nowrap leading-normal text-dark-text lg:ml-0 lg:text-left lg:text-[15px] lg:leading-[1.55]"
+        >
+          {countIn('bandung_raya')}<span class="hidden lg:inline"> di</span> Bandung Raya<br />
+          {countIn('jabodetabek')}<span class="hidden lg:inline"> di</span> Jabodetabek
+        </p>
+      </div>
+    </div>
+    <div class="relative lg:rounded-gb lg:border lg:border-dark-line lg:bg-dark-2 lg:p-9">
+      <LeadForm client:visible type="partnership" settings={waSettings} />
+    </div>
+  </div>
+</section>
