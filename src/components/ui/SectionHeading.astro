@@ -1,0 +1,34 @@
+---
+// Label Jost + pemisah vertikal + judul ("PRICELIST | Harga per barber"). Slot default = judul.
+// Slot "aside" tampil di kanan pada desktop, di bawah judul pada mobile.
+interface Props {
+  id: string;
+  label: string;
+  tagline: string;
+  dark?: boolean;
+  class?: string;
+}
+
+const { id, label, tagline, dark = false, class: className = '' } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<div
+  class:list={[
+    'flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between lg:gap-10',
+    className,
+  ]}
+>
+  <div class="flex flex-col gap-4 lg:gap-3.5">
+    <p class="lbl" style={dark ? 'color:#c9cece' : undefined}>
+      {label}
+      <span
+        aria-hidden="true"
+        class="mx-2.5 inline-block h-3 w-px align-[-1px] lg:mx-3 lg:h-[13px]"
+        style={`background:${dark ? '#6e7676' : '#8a9090'}`}></span>
+      {tagline}
+    </p>
+    <h2 id={id} class="h2" style={dark ? 'color:#fff' : undefined}><slot /></h2>
+  </div>
+  {hasAside && <slot name="aside" />}
+</div>
