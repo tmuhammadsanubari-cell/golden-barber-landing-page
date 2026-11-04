@@ -316,7 +316,10 @@ export default function PricelistPicker({ branches, barbers, includes, settings 
           </div>
 
           <div className="mt-4 flex flex-col gap-1.5 text-[13px] leading-normal text-ink-muted lg:flex-row lg:flex-wrap lg:gap-6 lg:text-sm">
-            <p className="m-0">Harga dalam ribuan rupiah (130K = Rp130.000).</p>
+            <p className="order-last m-0 lg:order-none">
+              Harga dalam ribuan rupiah (130K = Rp130.000).
+              <span className="lg:hidden"> Ikon WA = booking barber tsb.</span>
+            </p>
             {hasGeneric && (
               <p className="m-0 flex items-start gap-1.5">
                 <span className="text-accent-strong">
@@ -406,7 +409,7 @@ export function ServicesPanel({ branches, services, availability, settings, chil
         </div>
         <p className="m-0 text-sm text-ink-muted lg:hidden">
           Ketersediaan di cabang <strong className="text-ink">{branch.name}</strong> ·{' '}
-          <a href="#harga" className="inline-flex min-h-11 items-center">
+          <a href="#harga" className="inline-flex min-h-11 items-center underline">
             Ganti cabang
           </a>
         </p>
@@ -448,7 +451,7 @@ export function ServicesPanel({ branches, services, availability, settings, chil
                     />
                     {!soon && (
                       <a
-                        className="inline-flex min-h-11 items-center text-sm font-bold"
+                        className="inline-flex min-h-11 min-w-11 items-center justify-end text-sm font-bold"
                         aria-label={`Tanya ${service.name} via WhatsApp`}
                         {...whatsAppLinkProps({
                           context: 'service',
@@ -467,7 +470,7 @@ export function ServicesPanel({ branches, services, availability, settings, chil
           ))}
         </div>
       )}
-      <p className="mt-4 mb-0 text-sm text-ink-muted">
+      <p className="mt-4 mb-0 hidden text-sm text-ink-muted lg:block">
         Status layanan mengikuti cabang terpilih. <strong className="text-ink">Segera Hadir</strong>{' '}
         = belum tersedia di cabang ini.
       </p>

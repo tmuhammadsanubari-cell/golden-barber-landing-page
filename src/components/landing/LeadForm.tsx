@@ -1,4 +1,4 @@
-import { useState, type SyntheticEvent } from 'react';
+import { useState, type ReactNode, type SyntheticEvent } from 'react';
 import Icon from '@/components/ui/Icon';
 import Input, { Textarea } from '@/components/ui/Input';
 import { leadSchema, zodToDetails, type LeadType } from '@/lib/validation/lead';
@@ -15,7 +15,7 @@ type Errors = Record<string, string>;
 function RadioGroup(props: {
   legend: string;
   name: string;
-  options: { value: string; label: string }[];
+  options: { value: string; label: ReactNode }[];
   defaultValue: string;
   error?: string;
   columns: string;
@@ -220,7 +220,14 @@ export default function LeadForm({ type, settings }: Props) {
             error={errors.location_status}
             columns="grid-cols-2"
             options={[
-              { value: 'sudah_ada', label: 'Sudah punya lokasi' },
+              {
+                value: 'sudah_ada',
+                label: (
+                  <span>
+                    Sudah punya<span className="hidden lg:inline"> lokasi</span>
+                  </span>
+                ),
+              },
               { value: 'belum_ada', label: 'Belum' },
             ]}
           />
@@ -230,7 +237,7 @@ export default function LeadForm({ type, settings }: Props) {
       <Textarea
         id={id('msg')}
         name="message"
-        label={<>Pesan {optional}</>}
+        label="Pesan"
         maxLength={1000}
         placeholder={
           isAcademy ? 'Ceritakan tujuan kamu ikut Academy' : 'Ceritakan rencana dan latar belakang Anda'

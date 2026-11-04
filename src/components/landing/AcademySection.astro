@@ -11,6 +11,8 @@ interface Props {
 
 const { settings } = Astro.props;
 const { academy_section: academy, social_links: social } = settings;
+// Spasi tak terputus: tanda "—" jangan jatuh ke awal baris saat judul terlipat.
+const title = academy.title.replace(' — ', ' — ');
 const handle = social.academy_instagram.match(/instagram\.com\/([^/]+)/)?.[1];
 const waSettings = {
   whatsapp_number: settings.whatsapp_number,
@@ -22,7 +24,7 @@ const waSettings = {
   <div class="wrap grid items-start gap-4 pt-10 pb-12 lg:grid-cols-2 lg:gap-16 lg:py-24">
     <div class="flex flex-col gap-4 lg:gap-[22px]">
       <SectionHeading id="ac-h" label="Golden Academy" tagline="Akademi cukur">
-        {academy.title}
+        {title}
       </SectionHeading>
       <p class="body-text">{academy.description}</p>
       <a

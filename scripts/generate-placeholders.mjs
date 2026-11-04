@@ -9,8 +9,8 @@ mkdirSync(DUMMY_DIR, { recursive: true });
 const stripes = (width, height) => `
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
   <defs>
-    <pattern id="p" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <rect width="2" height="18" fill="rgba(255,255,255,.13)" />
+    <pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="2" height="16" fill="rgba(255,255,255,.13)" />
     </pattern>
   </defs>
   <rect width="100%" height="100%" fill="#B4B8B8" />
@@ -22,9 +22,9 @@ const dummy = async (name, width, height) =>
     .webp({ quality: 70 })
     .toFile(`${DUMMY_DIR}/${name}.webp`);
 
-await dummy('hero', 1000, 1240);
+await dummy('hero', 640, 680);
 await dummy('cabang', 1200, 800);
-for (let index = 1; index <= 8; index += 1) await dummy(`galeri-${index}`, 600, 600);
+for (let index = 1; index <= 8; index += 1) await dummy(`galeri-${index}`, 300, 300);
 
 writeFileSync(
   'public/brand/favicon.svg',

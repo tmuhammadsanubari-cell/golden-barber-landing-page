@@ -43,8 +43,8 @@ const jsonLd = JSON.stringify({
     </div>
     <div class="border-b border-line">
       {
-        items.map((item) => (
-          <details class="border-t border-line">
+        items.map((item, index) => (
+          <details class="border-t border-line" open={index === 0}>
             <summary class="faq-q">
               <h3 class="m-0 font-[inherit] text-[length:inherit] font-[inherit]">
                 {item.question}

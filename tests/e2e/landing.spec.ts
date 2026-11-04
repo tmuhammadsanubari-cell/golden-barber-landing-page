@@ -136,8 +136,10 @@ test.describe('landing page', () => {
 
   test('FAQ: hanya aktif, JSON-LD cocok', async ({ page }) => {
     await expect(page.locator('#faq details')).toHaveCount(6);
+    const firstAnswer = page.getByText('Semua cabang buka setiap hari pukul 08.00–23.00 WIB.');
+    await expect(firstAnswer).toBeVisible();
     await page.locator('#faq summary').first().click();
-    await expect(page.getByText('Semua cabang buka setiap hari pukul 08.00–23.00 WIB.')).toBeVisible();
+    await expect(firstAnswer).toBeHidden();
     const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
     expect(JSON.parse(jsonLd!).mainEntity).toHaveLength(6);
   });

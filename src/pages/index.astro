@@ -65,5 +65,7 @@ const flagshipBarbers = barbers.filter((barber) => barber.branch_slug === flagsh
     <Faq items={faqs} settings={settings} flagship={flagship} />
   </main>
   <Footer settings={settings} branches={branches} />
-  <FloatingWhatsApp settings={settings} />
+  <aside aria-label="Booking cepat">
+    <FloatingWhatsApp settings={settings} />
+  </aside>
 </BaseLayout>

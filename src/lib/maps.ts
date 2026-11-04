@@ -10,6 +10,9 @@ export function buildMapsUrl(
 }
 
 /** Alamat satu baris untuk kartu cabang. */
-export function formatAddress(branch: Pick<Branch, 'address' | 'district' | 'city'>): string {
-  return [branch.address, branch.district, branch.city].filter(Boolean).join(', ');
+export function formatAddress(
+  branch: Pick<Branch, 'address' | 'district' | 'city' | 'postal_code'>,
+): string {
+  const city = [branch.city, branch.postal_code].filter(Boolean).join(' ');
+  return [branch.address, branch.district, city].filter(Boolean).join(', ');
 }

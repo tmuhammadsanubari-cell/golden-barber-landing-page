@@ -85,8 +85,8 @@ const statValue = 'm-0 font-display font-extrabold leading-none';
       <Image
         src={hero.image_path}
         alt="Foto ilustrasi interior barbershop Golden Barber"
-        width={1000}
-        height={1240}
+        width={640}
+        height={680}
         loading="eager"
         fetchpriority="high"
         class="h-[260px] w-full object-cover lg:h-[620px]"
@@ -94,7 +94,7 @@ const statValue = 'm-0 font-display font-extrabold leading-none';
       {
         hero.image_is_placeholder && (
           <Badge variant="photo" className="absolute bottom-3.5 left-3.5 lg:bottom-5 lg:left-5">
-            Foto dummy · Interior cabang
+            Foto dummy · Interior<span class="hidden lg:inline"> cabang</span>
           </Badge>
         )
       }
