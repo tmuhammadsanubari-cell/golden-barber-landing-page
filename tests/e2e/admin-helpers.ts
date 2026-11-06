@@ -23,6 +23,14 @@ let sessionCookies: Cookies = [];
  * laju Supabase Auth (dan endpoint login memetakan semua galat itu menjadi 401).
  */
 export async function loginCached(page: Page) {
+  // Toolbar dev Astro melayang di atas tombol (terutama di viewport mobile) dan mencegat klik.
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style');
+      style.textContent = 'astro-dev-toolbar{display:none!important}';
+      document.head.append(style);
+    });
+  });
   if (sessionCookies.length === 0) {
     const res = await page.request.post('/api/auth/login', {
       data: { email: adminEmail, password: adminPassword, remember: true },

@@ -37,7 +37,7 @@ function normalizePrice(value: PriceInput, ctx: z.RefinementCtx): number | null 
 }
 
 /** Harga wajib (Haircut Reguler). */
-const requiredPrice = (label: string) =>
+export const requiredPrice = (label: string) =>
   priceInput.transform((value, ctx): number => {
     const price = normalizePrice(value, ctx);
     if (price === null) {
@@ -48,7 +48,7 @@ const requiredPrice = (label: string) =>
   });
 
 /** Harga opsional (Long Trim, harga coret): kosong → null. */
-const optionalPrice = priceInput.transform((value, ctx) => normalizePrice(value, ctx));
+export const optionalPrice = priceInput.transform((value, ctx) => normalizePrice(value, ctx));
 
 const name = z
   .string({ error: 'Nama barber wajib diisi.' })

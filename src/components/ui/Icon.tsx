@@ -165,6 +165,9 @@ const paths: Record<string, ReactNode> = {
       <circle cx="12" cy="18.5" r="1.7" />
     </g>
   ),
+  edit: <path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4" />,
+  tag: <path d="M3 12V4h8l9 9-8 8zM7.5 8h.01" />,
+  layers: <path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5" />,
   copy: <path d="M9 9h11v11H9zM5 15V4h11" />,
   move: <path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4" />,
   'arrow-up': <path d="M12 19V5M6 11l6-6 6 6" />,
