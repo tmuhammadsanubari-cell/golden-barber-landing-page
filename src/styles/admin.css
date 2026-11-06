@@ -940,7 +940,7 @@ select.inp {
   }
 }
 .dash-grid {
-  grid-template-columns: 150px minmax(0, 1.2fr) 100px minmax(0, 0.9fr) 110px 190px;
+  grid-template-columns: 138px minmax(150px, 1.5fr) 90px minmax(0, 0.8fr) 96px 180px;
 }
 .qa {
   display: flex;
