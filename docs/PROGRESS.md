@@ -4,9 +4,49 @@ Claude Code: baca file ini di awal sesi, update di akhir setiap tugas.
 
 ## Posisi sekarang
 
-- **Milestone aktif:** M3 (jalan, branch `m3-admin`)
-- **Tugas berikutnya:** M3 bagian 3: Cabang (F-16), Barber & Harga (F-17), Layanan (F-18).
-- **Blocker:** (1) tidak ada (akun Super Admin pertama sudah dibuat 2026-11-06); (2) `LEAD_IP_SALT` (nilai ada di `.env` lokal) harus ditambahkan ke Environment Variables Vercel agar form lead berfungsi di produksi; (3) URL Configuration Supabase (Site URL dan Redirect URL reset password) belum diisi.
+- **Milestone aktif:** M3 Panel Admin (jalan). Branch `m3-admin`, commit terakhir sudah di-push ke GitHub. **Belum di-merge ke `main` dan belum ada PR.** `main` sudah memuat M1 dan M2.
+- **Tugas berikutnya:** M3 bagian 3 → Cabang (F-16), lalu Barber & Harga (F-17), Layanan (F-18). Detail di `docs/milestones/M3.md`.
+- **Blocker:** tidak ada.
+- **Jangan merge `m3-admin` ke `main` sebelum M3 selesai.** Panel admin masih sebagian; menu samping memuat tautan ke halaman yang belum ada (Cabang, Barber, Layanan, Galeri, Testimoni, FAQ, Pengaturan, Pengguna) dan akan 404.
+
+### Sisa M3 (urut kerja)
+
+1. **Bagian 3:** Cabang (tabel, urut ulang, panel edit, slug unik, satu cabang pusat, hapus dicegah bila ada barber), Barber & Harga (filter cabang, edit inline autosave, harga coret, pindah cabang, duplikasi harga, kartu mobile; D-09), Layanan (tab Katalog + Matriks, "Terapkan ke semua cabang", override harga; D-09).
+2. **Bagian 4:** Publikasi: `GET /api/admin/publish/status`, `POST /api/admin/publish` (Vercel Deploy Hook, `publish_logs`, kunci 60 detik), `PublishBar` tersambung di setiap layar admin, banner "belum dipublikasikan" di Dashboard.
+3. **Bagian 5:** Galeri + upload bertanda tangan (maks 3 MB, JPG/PNG/WebP), Testimoni, FAQ (tanpa mockup, pakai pola Galeri/Cabang), Pengaturan situs, Pengguna admin (undang, ubah peran, nonaktifkan, cegah hapus Super Admin terakhir).
+4. **Definition of Done M3:** alur utama login → ubah harga Aditia → Publikasikan → harga baru tampil ≤ 5 menit; Editor tidak bisa buka `/admin/pengguna` (403); semua acceptance criteria F-14 s/d F-22 dicek dengan `/cek-prd`.
+5. Uji yang tertunda: Editor tidak boleh menghapus lead (RLS, butuh akun Editor), masuk bersama F-22.
+
+### Sudah selesai di M3 (per 2026-11-06)
+
+Fondasi (middleware, auth, layout, login/reset), `POST /api/leads` + `LeadForm`, halaman Leads (F-19), Dashboard (F-15). Rincian di Log di bawah.
+
+### Catatan serah-terima sesi
+
+**Status layanan luar**
+- Situs produksi: https://golden-barber-landing-page.vercel.app (deploy dari `main`, build membaca Supabase). Admin: `/admin/login`.
+- Supabase project `fpeykbrbifxfqzbpsgna` (ap-southeast-1). Migrasi dan seed sudah di-push. `LEAD_IP_SALT` sudah ada di Vercel, URL Configuration Supabase sudah diisi, token CLI sudah dihapus user.
+- Akun Super Admin: `tmuhammadsanubari@gmail.com` (nama "Admin Pusat"). Password diganti user sendiri; nilai terbaru ada di `.env` lokal (`E2E_ADMIN_PASSWORD`) untuk e2e. `.env` tidak masuk git.
+- Setelah merge M3 ke `main`, tambah Environment Variable Vercel yang masih kurang bila ada fitur baru memakainya (`VERCEL_DEPLOY_HOOK_URL`, `VERCEL_API_TOKEN` untuk F-20; `UPLOAD_MAX_BYTES` opsional). Deploy Hook dibuat user di Vercel → Settings → Git → Deploy Hooks (branch `main`).
+
+**Perintah penting**
+- Dev server: `npm run dev`. Port 4321 sering dipakai dev server lain milik user; jangan dimatikan. Pakai port lain: `E2E_PORT=4400 npm run test:e2e` (Playwright menyalakan servernya sendiri).
+- Tes admin dengan akun sungguhan butuh variabel `.env` di proses: `set -a; . ./.env; set +a` sebelum `npx playwright test` (bash), supaya `E2E_ADMIN_*`, `PUBLIC_SUPABASE_URL`, dan `SUPABASE_SERVICE_ROLE_KEY` terbaca.
+- Uji ke database: `npm run test:db`. Unit: `npm test` (109 tes). e2e penuh: 116 lolos, 2 skip.
+- Supabase CLI v3: pakai `--remote` untuk `db push`/`db lint`; autentikasi lewat `SUPABASE_ACCESS_TOKEN` (token sudah dicabut, minta user buat baru bila perlu `db push` lagi).
+- Seed: ubah JSON di `src/data/seed/`, lalu `npm run seed:build`.
+
+**Jebakan yang sudah ditemui (hindari mengulang)**
+- Dev server Vite yang lama menyala bisa memberi "Outdated Optimize Dep" dan island React tidak hidrasi. Restart server bila tes hidrasi gagal.
+- Tes e2e harus menunggu hidrasi (`astro-island[ssr]` hilang) sebelum berinteraksi dengan island; elemen SSR sudah "enabled" sebelum itu.
+- Tes admin berjalan paralel (desktop + mobile) dengan satu akun dan satu database: data uji harus diberi penanda unik per proses (`UJI-E2E ...`), dibersihkan lewat service role, dan asersi tidak boleh bergantung pada hitungan global.
+- Pembatas login di memori terkunci 15 menit setelah 5 login gagal dari IP yang sama (hanya di dev server yang sama); restart dev server melepasnya.
+- `supabase.auth.signOut()` bawaan mencabut semua sesi; sudah diganti `scope: 'local'` (D-28).
+- Gaya `style=""` inline mengalahkan CSS responsif; untuk elemen yang disembunyikan di mobile pakai kelas + `!important` atau pindahkan ke CSS.
+- Perintah Bash dengan heredoc panjang sering gagal di sesi ini ("unexpected EOF"); tulis berkas dengan tool Write dan edit multi-baris dengan tool Edit, bukan skrip `node -` bertanda kutip.
+- Mockup ada di bundle HTML bersarang (`design-reference/html/{public,admin}/*.html`): unduh isi dengan membuka `__bundler/manifest` (base64 + gzip), lalu `template` di dalamnya berisi markup per layar.
+
+**Keputusan terbaru:** D-18 s/d D-28 di `docs/DECISIONS.md` (judul SEO, `robots.txt`, auth admin, CSS admin, logout lokal, dan lain-lain).
 
 ## Ringkasan milestone
 
