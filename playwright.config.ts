@@ -6,6 +6,9 @@ const baseURL = `http://localhost:${port}`;
 
 export default defineConfig({
   testDir: 'tests/e2e',
+  // Dev server mengompilasi halaman saat pertama dibuka; beri ruang agar tidak flaky di mesin lambat.
+  timeout: 45_000,
+  expect: { timeout: 10_000 },
   use: { baseURL },
   webServer: {
     command: `npm run dev -- --port ${port}`,

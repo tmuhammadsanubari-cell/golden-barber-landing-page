@@ -96,7 +96,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     if (isApi) return fail(signedIn ? 'FORBIDDEN' : 'UNAUTHORIZED');
     if (signedIn) {
       // Login tapi bukan admin aktif: hapus sesi lalu tolak.
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: 'local' });
       return forbiddenPage();
     }
     const target = `${context.url.pathname}${context.url.search}`;

@@ -100,6 +100,29 @@ test.describe('login sungguhan', () => {
     await expect(page).toHaveURL(/\/admin\/login\?redirect=%2Fadmin$/);
   });
 
+  test('keluar di satu browser tidak mengeluarkan sesi di browser lain', async ({
+    browser,
+    baseURL,
+  }) => {
+    const headers = { Origin: new URL(baseURL!).origin };
+    const body = { email: email!, password: password!, remember: true };
+    const a = await browser.newContext({ baseURL });
+    const b = await browser.newContext({ baseURL });
+    try {
+      expect((await a.request.post('/api/auth/login', { data: body, headers })).status()).toBe(200);
+      expect((await b.request.post('/api/auth/login', { data: body, headers })).status()).toBe(200);
+
+      expect((await a.request.post('/api/auth/logout', { headers })).status()).toBe(200);
+      expect((await a.request.get('/api/auth/me')).status()).toBe(401);
+      // Sesi di browser B tetap hidup (signOut lokal, bukan global).
+      expect((await b.request.get('/api/auth/me')).status()).toBe(200);
+    } finally {
+      await b.request.post('/api/auth/logout', { headers });
+      await a.close();
+      await b.close();
+    }
+  });
+
   test('password salah: pesan generik', async ({ page }) => {
     await page.goto('/admin/login');
     await waitHydrated(page);

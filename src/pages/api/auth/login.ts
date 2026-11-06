@@ -41,7 +41,7 @@ export const POST: APIRoute = async (context) => {
       .maybeSingle();
     if (profileError) throw profileError;
     if (!profile?.is_active) {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: 'local' });
       return fail('FORBIDDEN');
     }
 

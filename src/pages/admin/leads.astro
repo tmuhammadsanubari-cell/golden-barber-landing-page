@@ -1,0 +1,338 @@
+---
+// Kelola lead (PRD F-19, mockup Admin-Leads desktop & mobile). Daftar dirender server dengan
+// query string (?type=&status=&q=&page=&id=), tanpa JS untuk filter. Panel detail = island React.
+import LeadDetail from '@/components/admin/LeadDetail';
+import Icon from '@/components/ui/Icon';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  PAGE_SIZE,
+  STATUS_BADGE,
+  STATUS_LABEL,
+  STATUS_ORDER,
+  TYPE_LABEL,
+  formatLeadDate,
+  formatLeadTime,
+  leadFields,
+  leadWhatsAppUrl,
+  type LeadType,
+} from '@/lib/admin/leads';
+import { getLead, leadCounts, listLeads } from '@/lib/admin/leads-db';
+import { formatPhoneDisplay } from '@/lib/whatsapp';
+import { leadQuerySchema } from '@/lib/validation/admin-leads';
+
+export const prerender = false;
+
+const { supabase, admin } = Astro.locals;
+// Query tidak valid (mis. ?type=ngawur) jatuh ke tampilan awal, bukan error.
+const parsed = leadQuerySchema.safeParse(Object.fromEntries(Astro.url.searchParams));
+const query = parsed.success ? parsed.data : { page: 1 };
+const type: LeadType = query.type ?? 'academy';
+const { status, q, page, id } = query;
+
+const [counts, { rows, total }, selected] = await Promise.all([
+  leadCounts(supabase),
+  listLeads(supabase, { type, status, q }, page),
+  id ? getLead(supabase, id) : Promise.resolve(null),
+]);
+
+const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+const typeCounts = counts[type];
+const typeTotal = STATUS_ORDER.reduce((sum, key) => sum + typeCounts[key], 0);
+
+/** Tautan ke halaman ini dengan sebagian query diganti. `null` = hapus parameter. */
+function href(patch: Record<string, string | number | null | undefined>): string {
+  const params = new URLSearchParams();
+  const base: Record<string, string | number | undefined> = {
+    type,
+    status,
+    q,
+    page: page > 1 ? page : undefined,
+    id,
+  };
+  for (const [key, value] of Object.entries({ ...base, ...patch })) {
+    if (value !== undefined && value !== null && value !== '') params.set(key, String(value));
+  }
+  const text = params.toString();
+  return text ? `/admin/leads?${text}` : '/admin/leads';
+}
+
+const filtered = Boolean(status || q);
+const listHref = href({ id: null });
+const exportHref = `/api/admin/leads/export?${new URLSearchParams(
+  Object.entries({ type, status, q }).filter(([, v]) => v) as [string, string][],
+).toString()}`;
+
+const detail = selected
+  ? {
+      id: selected.id,
+      typeLabel: TYPE_LABEL[selected.type],
+      name: selected.full_name,
+      status: selected.status,
+      note: selected.admin_note ?? '',
+      dateLabel: `${formatLeadDate(selected.created_at)}, ${formatLeadTime(selected.created_at)}`,
+      sourcePath: selected.source_path,
+      waUrl: leadWhatsAppUrl(selected),
+      fields: leadFields(selected),
+    }
+  : null;
+---
+
+<AdminLayout title="Leads" active="leads">
+  <div class="leads" data-detail={detail ? '' : undefined}>
+    <section class="leads-list" aria-label="Daftar lead">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+        <div>
+          <h1 class="h1">Leads</h1>
+          <p style="margin:6px 0 0;font-size:14px;color:#5b6161">
+            Isian form minat dari situs. Hubungi lead baru dalam 1×24 jam.
+          </p>
+        </div>
+        <a class="btn-o" href={exportHref} download>
+          <Icon name="download" size={18} />
+          Ekspor CSV
+        </a>
+      </div>
+
+      <nav class="tabs" aria-label="Jenis lead">
+        {(['academy', 'partnership'] as const).map((key) => (
+          <a
+            class="tab"
+            href={href({ type: key, status: null, q: null, page: null, id: null })}
+            aria-current={key === type ? 'page' : undefined}
+          >
+            {TYPE_LABEL[key]}
+            {counts[key].new > 0 && (
+              <span class="bd b-warn" style="height:20px">
+                {counts[key].new} baru
+              </span>
+            )}
+          </a>
+        ))}
+      </nav>
+
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="chips" role="group" aria-label="Filter status" style="max-width:100%">
+          <a
+            class="chip"
+            href={href({ status: null, page: null, id: null })}
+            aria-current={!status ? 'true' : undefined}
+          >
+            Semua · {typeTotal}
+          </a>
+          {STATUS_ORDER.map((key) => (
+            <a
+              class="chip"
+              href={href({ status: key, page: null, id: null })}
+              aria-current={status === key ? 'true' : undefined}
+            >
+              {STATUS_LABEL[key]} · {typeCounts[key]}
+            </a>
+          ))}
+        </div>
+        <form class="search" method="get" action="/admin/leads" role="search">
+          <input type="hidden" name="type" value={type} />
+          {status && <input type="hidden" name="status" value={status} />}
+          <label class="sr-only" for="lead-q">
+            Cari lead
+          </label>
+          <input
+            id="lead-q"
+            class="inp"
+            type="search"
+            name="q"
+            value={q ?? ''}
+            placeholder="Cari nama, kota, atau nomor…"
+            maxlength="100"
+          />
+          <Icon name="search" size={18} />
+          <button class="sr-only" type="submit">
+            Cari
+          </button>
+        </form>
+      </div>
+
+      <div class="card" style="overflow:hidden">
+        {rows.length === 0 ? (
+          <div style="padding:56px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+            <span
+              aria-hidden="true"
+              style="width:56px;height:56px;border-radius:28px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#5b6161"
+            >
+              <Icon name="inbox" size={26} />
+            </span>
+            <p class="h3">{filtered ? 'Tidak ada lead yang cocok' : 'Belum ada lead'}</p>
+            <p style="margin:0;font-size:14px;color:#5b6161;max-width:380px;line-height:1.55">
+              {filtered
+                ? `Tidak ada lead ${TYPE_LABEL[type]} untuk filter ini.`
+                : 'Lead muncul di sini setelah pengunjung mengisi form Golden Academy atau Kemitraan di situs.'}
+            </p>
+            {filtered ? (
+              <a class="btn-o" href={href({ status: null, q: null, page: null, id: null })}>
+                Hapus filter
+              </a>
+            ) : (
+              <a class="btn-o" href="/#academy" target="_blank" rel="noopener">
+                Lihat form di situs
+              </a>
+            )}
+          </div>
+        ) : (
+          <>
+            <div class="only-lg" role="table" aria-label="Daftar lead">
+              <div role="row" class="thr lead-grid">
+                <span role="columnheader">Tanggal</span>
+                <span role="columnheader">Nama</span>
+                <span role="columnheader">Nomor WA</span>
+                <span role="columnheader">Kota</span>
+                <span role="columnheader">Status</span>
+                <span role="columnheader">
+                  <span class="sr-only">Aksi</span>
+                </span>
+              </div>
+              {rows.map((lead) => (
+                <div
+                  role="row"
+                  class:list={['tr', 'lead-grid', lead.id === selected?.id && 'sel']}
+                  data-lead-id={lead.id}
+                >
+                  <span role="cell" style="color:#5b6161;font-size:13px;line-height:1.3">
+                    {formatLeadDate(lead.created_at)}
+                    <br />
+                    {formatLeadTime(lead.created_at)}
+                  </span>
+                  <span role="cell" style="font-weight:700;overflow-wrap:anywhere">
+                    {lead.full_name}
+                  </span>
+                  <span role="cell" class="phone-cell">
+                    {formatPhoneDisplay(lead.whatsapp_number)}
+                    <a
+                      class="btn-o btn-sm"
+                      href={leadWhatsAppUrl(lead)}
+                      target="_blank"
+                      rel="noopener"
+                      aria-label={`Chat WA ${lead.full_name}`}
+                      style="padding:0 10px"
+                    >
+                      Chat WA
+                    </a>
+                  </span>
+                  <span role="cell">{lead.city}</span>
+                  <span role="cell">
+                    <span class={`bd ${STATUS_BADGE[lead.status]}`} data-lead-badge>
+                      {STATUS_LABEL[lead.status]}
+                    </span>
+                  </span>
+                  <span role="cell">
+                    <a
+                      class="ib"
+                      href={href({ id: lead.id })}
+                      aria-label={`Lihat detail ${lead.full_name}`}
+                      aria-current={lead.id === selected?.id ? 'true' : undefined}
+                    >
+                      <Icon name="chevron-right" />
+                    </a>
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div class="only-sm" style="padding:12px">
+              {rows.map((lead) => (
+                <article
+                  class="card"
+                  style="padding:14px;display:flex;flex-direction:column;gap:10px"
+                  data-lead-id={lead.id}
+                >
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                    <div style="min-width:0">
+                      <h2 style="margin:0;font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;overflow-wrap:anywhere">
+                        {lead.full_name}
+                      </h2>
+                      <p style="margin:4px 0 0;font-size:13px;color:#5b6161">
+                        {formatLeadDate(lead.created_at)}, {formatLeadTime(lead.created_at)} ·{' '}
+                        {lead.city}
+                      </p>
+                    </div>
+                    <span class={`bd ${STATUS_BADGE[lead.status]}`} data-lead-badge>
+                      {STATUS_LABEL[lead.status]}
+                    </span>
+                  </div>
+                  <p style="margin:0;font-size:14px;font-variant-numeric:tabular-nums">
+                    {formatPhoneDisplay(lead.whatsapp_number)}
+                  </p>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+                    <a
+                      class="btn"
+                      href={leadWhatsAppUrl(lead)}
+                      target="_blank"
+                      rel="noopener"
+                      aria-label={`Chat WA ${lead.full_name}`}
+                    >
+                      <Icon name="whatsapp" size={18} />
+                      Chat WA
+                    </a>
+                    <a
+                      class="btn-o"
+                      href={href({ id: lead.id })}
+                      aria-label={`Detail ${lead.full_name}`}
+                    >
+                      Detail
+                      <Icon name="chevron-right" size={18} />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;font-size:13px;color:#5b6161;border-top:1px solid #eee">
+              <span>
+                Menampilkan {rows.length} dari {total} lead
+              </span>
+              <nav aria-label="Halaman" style="display:flex;align-items:center;gap:8px">
+                {page > 1 ? (
+                  <a
+                    class="btn-o btn-sm"
+                    href={href({ page: page - 1 > 1 ? page - 1 : null, id: null })}
+                  >
+                    Sebelumnya
+                  </a>
+                ) : null}
+                <span>
+                  Halaman {page} dari {totalPages}
+                </span>
+                {page < totalPages ? (
+                  <a class="btn-o btn-sm" href={href({ page: page + 1, id: null })}>
+                    Berikutnya
+                  </a>
+                ) : null}
+              </nav>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+
+    {detail && (
+      <aside class="leads-detail" aria-labelledby="lead-detail-h">
+        <a class="btn-o" href={listHref} style="align-self:flex-start;margin-bottom:12px">
+          <Icon name="chevron-left" size={18} />
+          Kembali ke daftar
+        </a>
+        <LeadDetail
+          client:load
+          lead={detail}
+          canDelete={admin?.role === 'super_admin'}
+          listHref={listHref}
+        />
+      </aside>
+    )}
+  </div>
+  {id && !selected && (
+    <div role="alert" class="alert" style="max-width:520px">
+      <Icon name="alert-circle" size={18} />
+      <span>
+        Lead tidak ditemukan. Mungkin sudah dihapus. <a href={listHref}>Kembali ke daftar</a>.
+      </span>
+    </div>
+  )}
+</AdminLayout>

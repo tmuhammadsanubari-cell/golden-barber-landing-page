@@ -7,7 +7,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ locals, cookies }) => {
   try {
-    await locals.supabase.auth.signOut();
+    await locals.supabase.auth.signOut({ scope: 'local' });
     cookies.delete(REMEMBER_COOKIE, { path: '/' });
     return ok({ redirect: '/admin/login' });
   } catch (error) {
