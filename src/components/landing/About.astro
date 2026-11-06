@@ -1,0 +1,103 @@
+---
+import Icon from '@/components/ui/Icon';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { buildMapsUrl } from '@/lib/maps';
+import { formatDateId, formatRating } from '@/lib/format';
+import type { Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  settings: SiteSettings;
+  flagship: Branch;
+}
+
+const { settings, flagship } = Astro.props;
+const { about_highlights: highlights, google_rating: rating, media_mentions: media } = settings;
+
+// Kartu "Buka Sampai Malam" di mockup memakai ikon bulan, bukan jam.
+const iconName = (icon: string) => (icon === 'clock' ? 'moon' : icon);
+
+// Klaim liputan media wajib menyertakan tautan sumber (PRD F-09). Seed belum punya relasi
+// highlight ↔ media, jadi dipetakan lewat ikon kartu Persib.
+const sourceFor = (icon: string) => (icon === 'trophy' ? media[0] : undefined);
+
+const ratingLabel = formatRating(rating.rating);
+const reviewCount = rating.review_count.toLocaleString('id-ID');
+const scope = rating.scope.charAt(0).toLowerCase() + rating.scope.slice(1);
+---
+
+<section aria-labelledby="why-h" class="border-t border-line">
+  <div class="wrap py-12 lg:py-24">
+    <SectionHeading
+      id="why-h"
+      label="Kenapa Golden?"
+      tagline={`${highlights.length} alasan`}
+      class="mb-5 lg:mb-12"
+    >
+      Rapi dari konsultasi<br class="hidden lg:block" /> sampai styling.
+      <p slot="aside" class="body-text hidden max-w-[440px] lg:block">
+        Satu harga sudah lengkap. Kamu tinggal pilih cabang, pilih barber, dan duduk.
+      </p>
+    </SectionHeading>
+
+    <div class="why-list">
+      {
+        highlights.map((item) => {
+          const source = sourceFor(item.icon);
+          return (
+            <div class="why">
+              <span class="text-accent-strong">
+                <Icon name={iconName(item.icon)} size={32} strokeWidth={1.4} />
+              </span>
+              <div class="lg:contents">
+                <h3>{item.title}</h3>
+                <p>
+                  {item.description}
+                  {source && (
+                    <a href={source.url} target="_blank" rel="noopener" class="inline-flex min-h-11 items-center underline lg:inline lg:min-h-0">
+                      Sumber: {source.outlet}
+                    </a>
+                  )}
+                </p>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <div
+      class="card mt-5 flex flex-col gap-3 !bg-white p-5 lg:flex-row lg:items-center lg:gap-8 lg:px-8 lg:py-7"
+    >
+      <div class="flex items-center gap-3.5 lg:contents">
+        <p
+          class="m-0 font-display text-5xl leading-none font-extrabold lg:text-[64px]"
+          aria-hidden="true"
+        >
+          {ratingLabel}
+        </p>
+        <div
+          role="img"
+          aria-label={`Rating ${ratingLabel} dari 5 bintang`}
+          class="flex gap-[3px] text-accent-strong lg:hidden"
+        >
+          {[1, 2, 3, 4, 5].map(() => <Icon name="star" size={22} />)}
+        </div>
+      </div>
+      <div class="flex flex-1 flex-col gap-2">
+        <div class="hidden gap-1 text-accent-strong lg:flex" aria-hidden="true">
+          {[1, 2, 3, 4, 5].map(() => <Icon name="star" size={22} />)}
+        </div>
+        <p class="m-0 text-base lg:text-lg">
+          <strong>{ratingLabel}★ dari {reviewCount}+ ulasan Google</strong>
+          <span class="text-ink-muted">— {scope}</span>
+        </p>
+        <p class="m-0 text-[13px] text-ink-muted">
+          Sumber: Google Maps. Diperbarui {formatDateId(rating.updated_at)}.
+        </p>
+      </div>
+      <a class="btn-o" href={buildMapsUrl(flagship)} target="_blank" rel="noopener">
+        Lihat ulasan di Google
+      </a>
+    </div>
+  </div>
+</section>

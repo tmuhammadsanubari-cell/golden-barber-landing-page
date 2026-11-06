@@ -1,0 +1,20 @@
+---
+import Icon from '@/components/ui/Icon';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { SiteSettings } from '@/types/content';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+---
+
+<a
+  class="btn fixed right-4 bottom-5 z-30 !size-[60px] !rounded-[30px] !p-0 shadow-[0_6px_18px_rgba(30,33,33,0.25)] lg:right-7 lg:bottom-7 lg:!h-auto lg:min-h-[60px] lg:!w-auto lg:!pr-6 lg:!pl-5"
+  aria-label="Booking via WhatsApp"
+  {...whatsAppLinkProps({ context: 'general', settings })}
+>
+  <Icon name="whatsapp" size={24} />
+  <span class="hidden lg:inline">Booking via WhatsApp</span>
+</a>

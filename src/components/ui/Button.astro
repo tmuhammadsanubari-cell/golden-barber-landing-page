@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'primary' | 'outline' | 'white';
+type Size = 'small' | 'default' | 'large';
+
+type Props = HTMLAttributes<'a'> & {
+  variant?: Variant;
+  size?: Size;
+  // Atribut tracking dari whatsAppLinkProps().
+  'data-wa-context'?: string;
+  'data-branch'?: string;
+};
+
+const { variant = 'primary', size = 'default', class: className = '', ...rest } = Astro.props;
+const variantClass = { primary: 'btn', outline: 'btn-o', white: 'btn-w' }[variant];
+const sizeClass = { small: 'btn-s', default: '', large: 'btn-l' }[size];
+---
+
+<a class:list={[variantClass, sizeClass, className]} {...rest}><slot /></a>

@@ -12,6 +12,10 @@ Folder ini untuk **file HTML hasil Claude Design**. Claude Code memakainya sebag
 3. Nama file boleh tetap seperti dari Claude Design. Kalau nama berbeda dari tabel di bawah, update kolom "File" di tabel ini.
 4. Hapus file `.gitkeep` di folder yang sudah terisi (opsional).
 
+## Catatan bundle
+
+Mockup yang tersedia adalah satu file bundle, `html/public/Golden Barber Indonesia — Landing Page.html`, berisi 23 artboard sebagai iframe (salinan identik ada di `html/admin/`). Nama `*.dc.html` di tabel bawah adalah nama artboard di dalam bundle. Buka di browser untuk melihatnya.
+
 ## Peta file → rute / komponen
 
 Nama default sesuai `docs/DESIGN-NOTES.md`. Centang kolom "Ada" setelah file ditaruh.

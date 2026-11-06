@@ -1,0 +1,64 @@
+---
+// Tab statis: semua panel ada di HTML (tetap terindeks), skrip kecil hanya menyembunyikan.
+// Panel diberi id `${tab.id}` dan atribut `data-tabpanel`; dirender lewat slot.
+interface Props {
+  label: string;
+  tabs: { id: string; label: string }[];
+  class?: string;
+}
+
+const { label, tabs, class: className = '' } = Astro.props;
+---
+
+<div data-tabs class={className}>
+  <div
+    role="tablist"
+    aria-label={label}
+    class="mb-[18px] flex border-b border-line lg:mb-7 lg:gap-2"
+  >
+    {
+      tabs.map((tab, index) => (
+        <button
+          type="button"
+          class="tab flex-1 lg:flex-none"
+          role="tab"
+          id={`tab-${tab.id}`}
+          aria-controls={tab.id}
+          aria-selected={index === 0 ? 'true' : 'false'}
+          tabindex={index === 0 ? 0 : -1}
+        >
+          {tab.label}
+        </button>
+      ))
+    }
+  </div>
+  <slot />
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+
+    const activate = (active: HTMLButtonElement) => {
+      for (const tab of tabs) {
+        const on = tab === active;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        root
+          .querySelector<HTMLElement>(`#${tab.getAttribute('aria-controls')}`)
+          ?.toggleAttribute('hidden', !on);
+      }
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(tab));
+      tab.addEventListener('keydown', (event) => {
+        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        const next = tabs[(index + step + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

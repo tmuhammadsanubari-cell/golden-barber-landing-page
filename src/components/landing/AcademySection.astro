@@ -1,0 +1,51 @@
+---
+import Badge from '@/components/ui/Badge';
+import Icon from '@/components/ui/Icon';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { SiteSettings } from '@/types/content';
+import LeadForm from './LeadForm';
+
+interface Props {
+  settings: SiteSettings;
+}
+
+const { settings } = Astro.props;
+const { academy_section: academy, social_links: social } = settings;
+// Spasi tak terputus: tanda "—" jangan jatuh ke awal baris saat judul terlipat.
+const title = academy.title.replace(' — ', ' — ');
+const handle = social.academy_instagram.match(/instagram\.com\/([^/]+)/)?.[1];
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+---
+
+<section id="academy" aria-labelledby="ac-h" class="border-t border-line lg:bg-alt">
+  <div class="wrap grid items-start gap-4 pt-10 pb-12 lg:grid-cols-2 lg:gap-16 lg:py-24">
+    <div class="flex flex-col gap-4 lg:gap-[22px]">
+      <SectionHeading id="ac-h" label="Golden Academy" tagline="Akademi cukur">
+        {title}
+      </SectionHeading>
+      <p class="body-text">{academy.description}</p>
+      <a
+        href={social.academy_instagram}
+        target="_blank"
+        rel="noopener"
+        class="inline-flex min-h-11 items-center gap-2.5 self-start font-bold no-underline lg:text-[17px]"
+      >
+        <Icon name="instagram" size={22} />
+        @{handle}
+      </a>
+      <div
+        class="ph flex h-[200px] items-end rounded-gb p-3 lg:h-[340px] lg:p-[18px]"
+        role="img"
+        aria-label="Foto ilustrasi suasana kelas Golden Academy"
+      >
+        <Badge variant="photo">Foto dummy · Kelas Academy</Badge>
+      </div>
+    </div>
+    <div class="card relative !bg-white px-[18px] py-[22px] lg:p-9">
+      <LeadForm client:visible type="academy" settings={waSettings} />
+    </div>
+  </div>
+</section>

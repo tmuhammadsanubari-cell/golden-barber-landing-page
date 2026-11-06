@@ -1,0 +1,169 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon';
+import { formatHours } from '@/lib/format';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  settings: SiteSettings;
+  flagship: Branch;
+}
+
+const { settings, flagship } = Astro.props;
+const wa = whatsAppLinkProps({ context: 'general', settings });
+const instagramHandle = settings.social_links.instagram.match(/instagram\.com\/([^/]+)/)?.[1];
+
+const menu = [
+  { href: '#cabang', label: 'Cabang' },
+  { href: '#harga', label: 'Harga' },
+  { href: '#layanan', label: 'Layanan' },
+  { href: '#galeri', label: 'Galeri' },
+  { href: '#academy', label: 'Academy' },
+  { href: '#kemitraan', label: 'Kemitraan' },
+  { href: '#faq', label: 'FAQ' },
+];
+---
+
+<header
+  id="navbar"
+  class="sticky top-0 z-20 border-b border-line bg-[rgba(236,236,236,0.96)] data-[scrolled]:bg-bg"
+>
+  <div class="wrap flex h-16 items-center gap-2 !pr-4 !pl-5 lg:h-[76px] lg:justify-between lg:gap-6">
+    <a href="#top" aria-label="Golden Barber Indonesia — beranda" class="mr-auto inline-flex min-h-11 min-w-0 items-center lg:mr-0">
+      <Image
+        src="/brand/logo-golden-barber.png"
+        alt="Golden Barber"
+        width={902}
+        height={136}
+        loading="eager"
+        class="h-5 w-auto lg:h-[30px]"
+      />
+    </a>
+    <nav aria-label="Menu utama" class="hidden items-center gap-0.5 lg:flex">
+      {
+        menu.map((item) => (
+          <a class="nl" href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a class="btn btn-s shrink-0 !gap-1.5 lg:!min-h-12 lg:!gap-2.5 lg:!px-[22px] lg:!text-base" {...wa}>
+      <Icon name="whatsapp" size={18} />
+      Booking via WA
+    </a>
+    <button
+      type="button"
+      id="drawer-open"
+      class="ic shrink-0 lg:hidden"
+      aria-label="Buka menu"
+      aria-expanded="false"
+      aria-controls="drawer"
+    >
+      <Icon name="menu" />
+    </button>
+  </div>
+</header>
+
+<div
+  id="drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  hidden
+  class="concrete fixed inset-0 z-40 flex flex-col overflow-y-auto px-5 pb-7 lg:hidden"
+>
+  <div class="-mr-1 flex h-16 shrink-0 items-center justify-between">
+    <Image
+      src="/brand/logo-golden-barber.png"
+      alt="Golden Barber"
+      width={902}
+      height={136}
+      class="h-5 w-auto"
+    />
+    <button type="button" id="drawer-close" class="ic" aria-label="Tutup menu">
+      <Icon name="close" />
+    </button>
+  </div>
+  <nav aria-label="Menu utama" class="mt-4 border-t border-line">
+    {
+      menu.map((item) => (
+        <a class="dl" href={item.href}>
+          {item.label}
+          <Icon name="chevron-right" />
+        </a>
+      ))
+    }
+  </nav>
+  <div class="mt-auto flex flex-col gap-3 pt-6">
+    <a class="btn btn-l" {...wa}>
+      <Icon name="whatsapp" />
+      Booking via WhatsApp
+    </a>
+    <p class="m-0 text-center text-sm text-ink-muted">
+      Buka setiap hari {formatHours(flagship.open_time, flagship.close_time)} · @{instagramHandle}
+    </p>
+  </div>
+</div>
+
+<script>
+  const SOLID_AFTER_PX = 80; // PRD F-01
+
+  const navbar = document.getElementById('navbar')!;
+  const syncNavbar = () => navbar.toggleAttribute('data-scrolled', window.scrollY > SOLID_AFTER_PX);
+  syncNavbar();
+  window.addEventListener('scroll', syncNavbar, { passive: true });
+
+  // Drawer mobile
+  const drawer = document.getElementById('drawer')!;
+  const openButton = document.getElementById('drawer-open')!;
+  const closeButton = document.getElementById('drawer-close')!;
+
+  const setDrawer = (open: boolean) => {
+    drawer.toggleAttribute('hidden', !open);
+    document.body.style.overflow = open ? 'hidden' : '';
+    openButton.setAttribute('aria-expanded', String(open));
+    (open ? closeButton : openButton).focus();
+  };
+
+  openButton.addEventListener('click', () => setDrawer(true));
+  closeButton.addEventListener('click', () => setDrawer(false));
+  drawer.querySelectorAll('nav a').forEach((link) => {
+    link.addEventListener('click', () => setDrawer(false));
+  });
+  drawer.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setDrawer(false);
+    if (event.key !== 'Tab') return;
+    const focusable = [...drawer.querySelectorAll<HTMLElement>('a, button')];
+    const first = focusable[0]!;
+    const last = focusable[focusable.length - 1]!;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  // Sorot menu sesuai section yang sedang terlihat
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('header nav .nl')];
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        for (const link of links) {
+          const active = link.hash === `#${entry.target.id}`;
+          if (active) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        }
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  links.forEach((link) => {
+    const section = document.querySelector(link.hash);
+    if (section) observer.observe(section);
+  });
+</script>

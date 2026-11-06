@@ -1,0 +1,60 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { Branch, BranchService, Service, SiteSettings } from '@/types/content';
+import { ServicesPanel, type Availability } from './PricelistPicker';
+
+interface Props {
+  settings: SiteSettings;
+  branches: Branch[];
+  services: Service[];
+  branchServices: BranchService[];
+}
+
+const { settings, branches, services, branchServices } = Astro.props;
+
+const panelBranches = branches.map(({ slug, name, whatsapp_number, is_flagship }) => ({
+  slug,
+  name,
+  whatsapp_number,
+  is_flagship,
+}));
+const panelServices = services.map(
+  ({ slug, name, category, price_type, price_min, price_max, note }) => ({
+    slug,
+    name,
+    category,
+    price_type,
+    price_min,
+    price_max,
+    note,
+  }),
+);
+const availability: Availability = {};
+for (const row of branchServices) {
+  (availability[row.branch_slug] ??= {})[row.service_slug] = {
+    status: row.status,
+    min: row.price_override_min,
+    max: row.price_override_max,
+  };
+}
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+---
+
+<section id="layanan" aria-labelledby="lay-h" class="border-t border-line bg-alt lg:bg-transparent">
+  <div class="wrap py-12 lg:py-24">
+    <ServicesPanel
+      client:visible
+      branches={panelBranches}
+      services={panelServices}
+      availability={availability}
+      settings={waSettings}
+    >
+      <SectionHeading id="lay-h" label="Layanan" tagline="Lebih dari haircut">
+        Add-ons, colouring<br class="hidden lg:block" /> &amp; treatment.
+      </SectionHeading>
+    </ServicesPanel>
+  </div>
+</section>
