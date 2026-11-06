@@ -7,9 +7,13 @@ interface Props {
   open: boolean;
   title: string;
   description: ReactNode;
-  confirmLabel?: string;
+  /** `null` = tanpa tombol konfirmasi (dialog hanya memberi tahu + aksi alternatif). */
+  confirmLabel?: string | null;
   /** Aksi tengah opsional, mis. "Nonaktifkan saja". */
   secondary?: { label: string; onClick: () => void };
+  /** Nama ikon & warna. Default: ikon sampah, merah (hapus). `danger={false}` = biru. */
+  icon?: string;
+  danger?: boolean;
   busy?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -21,6 +25,8 @@ export default function ConfirmDialog({
   description,
   confirmLabel = 'Hapus',
   secondary,
+  icon = 'trash',
+  danger = true,
   busy = false,
   onConfirm,
   onCancel,
@@ -71,8 +77,11 @@ export default function ConfirmDialog({
         aria-labelledby="confirm-title"
         aria-describedby="confirm-desc"
       >
-        <span className="dialog-icon" aria-hidden="true">
-          <Icon name="trash" size={22} />
+        <span
+          className={danger ? 'dialog-icon' : 'dialog-icon dialog-icon-info'}
+          aria-hidden="true"
+        >
+          <Icon name={icon} size={22} />
         </span>
         <h2 id="confirm-title" className="h3" style={{ fontSize: 19 }}>
           {title}
@@ -98,9 +107,16 @@ export default function ConfirmDialog({
               {secondary.label}
             </button>
           )}
-          <button type="button" className="btn-d" onClick={onConfirm} disabled={busy}>
-            {busy ? 'Memproses…' : confirmLabel}
-          </button>
+          {confirmLabel !== null && (
+            <button
+              type="button"
+              className={danger ? 'btn-d' : 'btn'}
+              onClick={onConfirm}
+              disabled={busy}
+            >
+              {busy ? 'Memproses…' : confirmLabel}
+            </button>
+          )}
         </div>
       </div>
     </div>

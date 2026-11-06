@@ -1,0 +1,188 @@
+---
+// Kelola cabang (PRD F-16, mockup Admin-Cabang). Daftar dirender server dengan query string
+// (?filter=&q=&id=&baru=1); tabel (urut ulang, menu baris) dan panel edit adalah island React.
+import BranchForm from '@/components/admin/BranchForm';
+import BranchTable from '@/components/admin/BranchTable';
+import Icon from '@/components/ui/Icon';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  EMPTY_BRANCH,
+  STATUS_LABEL,
+  countByStatus,
+  filterBranches,
+  toFormValues,
+  type BranchStatus,
+} from '@/lib/admin/branches';
+import { getBranchRow, listBranchItems } from '@/lib/admin/branches-db';
+import { branchFilterSchema } from '@/lib/validation/admin-branches';
+import { formatPhoneDisplay } from '@/lib/whatsapp';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+// Query tidak valid (mis. ?filter=ngawur) jatuh ke tampilan awal, bukan error.
+const parsed = branchFilterSchema.safeParse(Object.fromEntries(Astro.url.searchParams));
+const query = parsed.success ? parsed.data : { filter: null, q: null, id: null, baru: null };
+const { filter, q, id, baru } = query;
+
+const [all, selected, mainPhoneRow] = await Promise.all([
+  listBranchItems(supabase),
+  id ? getBranchRow(supabase, id) : Promise.resolve(null),
+  supabase.from('site_settings').select('value').eq('key', 'whatsapp_number').maybeSingle(),
+]);
+
+const counts = countByStatus(all);
+const items = filterBranches(all, filter, q);
+const filtered = Boolean(filter || q);
+const flagship = all.find((branch) => branch.is_flagship) ?? null;
+const mainPhone =
+  typeof mainPhoneRow.data?.value === 'string'
+    ? formatPhoneDisplay(mainPhoneRow.data.value)
+    : '0812-1480-7192';
+
+/** Tautan ke halaman ini dengan sebagian query diganti. `null` = hapus parameter. */
+function href(patch: Record<string, string | null | undefined>): string {
+  const params = new URLSearchParams();
+  const base: Record<string, string | null | undefined> = { filter, q, id, baru };
+  for (const [key, value] of Object.entries({ ...base, ...patch })) {
+    if (value) params.set(key, value);
+  }
+  const text = params.toString();
+  return text ? `/admin/cabang?${text}` : '/admin/cabang';
+}
+
+const listHref = href({ id: null, baru: null });
+const editHrefs = Object.fromEntries(
+  items.map((item) => [item.id, href({ id: item.id, baru: null })]),
+);
+const chips: { key: BranchStatus | null; label: string; count: number }[] = [
+  { key: null, label: 'Semua', count: all.length },
+  { key: 'aktif', label: STATUS_LABEL.aktif, count: counts.aktif },
+  { key: 'baru', label: STATUS_LABEL.baru, count: counts.baru },
+  { key: 'nonaktif', label: STATUS_LABEL.nonaktif, count: counts.nonaktif },
+];
+
+const panelOpen = baru === '1' || selected !== null;
+const selectedBarbers = selected ? (all.find((b) => b.id === selected.id)?.barbers ?? 0) : 0;
+---
+
+<AdminLayout title="Cabang" active="cabang">
+  <div class="cab" data-panel={panelOpen ? '' : undefined}>
+    <section class="cab-list" aria-label="Daftar cabang">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+        <div>
+          <h1 class="h1">Cabang</h1>
+          <p style="margin:6px 0 0;font-size:14px;color:#5b6161">
+            Atur urutan tampil di situs dengan menyeret ⋮⋮ atau tombol panah.
+          </p>
+        </div>
+        <a class="btn" href={href({ id: null, baru: '1' })}>
+          <Icon name="plus" size={16} />
+          Tambah Cabang
+        </a>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <nav class="chips" aria-label="Filter status" style="max-width:100%">
+          {chips.map((chip) => (
+            <a
+              class="chip"
+              href={href({ filter: chip.key, id: null, baru: null })}
+              aria-current={chip.key === filter ? 'true' : undefined}
+            >
+              {chip.label} · {chip.count}
+            </a>
+          ))}
+        </nav>
+        <form class="search" method="get" action="/admin/cabang" role="search">
+          {filter && <input type="hidden" name="filter" value={filter} />}
+          <label class="sr-only" for="cb-q">
+            Cari cabang
+          </label>
+          <input
+            id="cb-q"
+            class="inp"
+            type="search"
+            name="q"
+            value={q ?? ''}
+            placeholder="Cari cabang…"
+            maxlength="100"
+          />
+          <Icon name="search" size={18} />
+          <button class="sr-only" type="submit">
+            Cari
+          </button>
+        </form>
+      </div>
+
+      <div class="card" style="overflow:hidden">
+        {items.length === 0 ? (
+          <div style="padding:56px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+            <span
+              aria-hidden="true"
+              style="width:56px;height:56px;border-radius:28px;background:#f0f0f0;display:inline-flex;align-items:center;justify-content:center;color:#5b6161"
+            >
+              <Icon name="pin" size={26} />
+            </span>
+            <p class="h3">{filtered ? 'Tidak ada cabang yang cocok' : 'Belum ada cabang'}</p>
+            <p style="margin:0;font-size:14px;color:#5b6161;max-width:380px;line-height:1.55">
+              {filtered
+                ? 'Coba ubah filter atau kata kunci pencarian.'
+                : 'Tambahkan cabang pertama agar tampil di situs setelah dipublikasikan.'}
+            </p>
+            {filtered ? (
+              <a class="btn-o" href={href({ filter: null, q: null, id: null, baru: null })}>
+                Hapus filter
+              </a>
+            ) : (
+              <a class="btn" href={href({ id: null, baru: '1' })}>
+                Tambah Cabang
+              </a>
+            )}
+          </div>
+        ) : (
+          <BranchTable
+            client:load
+            items={items}
+            selectedId={selected?.id ?? null}
+            canReorder={!filtered}
+            editHrefs={editHrefs}
+            listHref={listHref}
+          />
+        )}
+      </div>
+    </section>
+
+    {panelOpen && (
+      <div class="cab-panel">
+        <a class="btn-o" href={listHref} style="align-self:flex-start;margin-bottom:12px">
+          <Icon name="chevron-left" size={18} />
+          Kembali ke daftar
+        </a>
+        <BranchForm
+          client:load
+          branchId={selected?.id ?? null}
+          title={selected?.name ?? 'Cabang baru'}
+          initial={selected ? toFormValues(selected) : EMPTY_BRANCH}
+          flagship={flagship ? { id: flagship.id, name: flagship.name } : null}
+          photo={
+            selected?.photo_path
+              ? { src: selected.photo_path, placeholder: selected.photo_is_placeholder }
+              : null
+          }
+          barbers={selectedBarbers}
+          mainPhone={mainPhone}
+          closeHref={listHref}
+        />
+      </div>
+    )}
+  </div>
+  {id && !selected && (
+    <div role="alert" class="alert" style="max-width:520px">
+      <Icon name="alert-circle" size={18} />
+      <span>
+        Cabang tidak ditemukan. Mungkin sudah dihapus. <a href={listHref}>Kembali ke daftar</a>.
+      </span>
+    </div>
+  )}
+</AdminLayout>
