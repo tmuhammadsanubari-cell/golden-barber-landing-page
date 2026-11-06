@@ -36,14 +36,19 @@ test.describe('dashboard admin', () => {
   });
 
   test('kartu statistik sama dengan isi database', async ({ page }) => {
-    const [branches, barbers] = await Promise.all([
-      service.from('branches').select('id', { count: 'exact', head: true }).eq('is_active', true),
-      service.from('barbers').select('id', { count: 'exact', head: true }).eq('is_active', true),
-    ]);
     await page.goto('/admin');
     await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
-    await expect(stat(page, 'branches')).toHaveText(String(branches.count));
-    await expect(stat(page, 'barbers')).toHaveText(String(barbers.count));
+    // Tes lain (mis. Tambah Barber) bisa membuat barber/cabang aktif sesaat. Hitungan dibaca ulang
+    // dan dicocokkan lagi sampai keduanya cocok pada saat yang sama, bukan sekali jalan.
+    await expect(async () => {
+      const [branches, barbers] = await Promise.all([
+        service.from('branches').select('id', { count: 'exact', head: true }).eq('is_active', true),
+        service.from('barbers').select('id', { count: 'exact', head: true }).eq('is_active', true),
+      ]);
+      await page.reload();
+      await expect(stat(page, 'branches')).toHaveText(String(branches.count), { timeout: 3000 });
+      await expect(stat(page, 'barbers')).toHaveText(String(barbers.count), { timeout: 3000 });
+    }).toPass({ timeout: 20_000 });
     await expect(page.getByText(/\d+ Bandung Raya · \d+ Jabodetabek/)).toBeVisible();
     await expect(page.getByText('Publikasi Terakhir')).toBeVisible();
   });

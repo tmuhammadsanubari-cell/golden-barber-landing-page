@@ -1197,33 +1197,47 @@ select.inp {
   gap: 16px;
   min-height: 44px;
 }
+/* Saklar: tombol 52×44 (tap target ≥ 44px), trek 44×28 digambar dengan ::before. */
 .sw {
   position: relative;
-  width: 44px;
-  height: 28px;
-  border-radius: 14px;
+  width: 52px;
+  height: 44px;
   border: 0;
-  background: #bfc4c4;
+  background: transparent;
   cursor: pointer;
   padding: 0;
   flex: none;
 }
+.sw::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 44px;
+  height: 28px;
+  border-radius: 14px;
+  background: #bfc4c4;
+}
 .sw::after {
   content: '';
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 12px;
+  left: 8px;
   width: 20px;
   height: 20px;
   border-radius: 10px;
   background: #fff;
   transition: left 0.15s;
 }
-.sw.on {
+.sw.on::before {
   background: var(--a-accent);
 }
 .sw.on::after {
-  left: 20px;
+  left: 28px;
+}
+.sw:focus-visible::before {
+  outline: 3px solid #2e80ba;
+  outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
   .sw::after {
@@ -1237,4 +1251,298 @@ select.inp {
 .dialog-icon-info {
   background: var(--a-accent-soft);
   color: var(--a-accent);
+}
+
+/* ---------- Barber & Harga (F-17) ---------- */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+}
+.page-sub {
+  margin: 6px 0 0;
+  max-width: 640px;
+  font-size: 14px;
+  color: var(--a-muted);
+}
+.page-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--a-muted);
+}
+.toolbar {
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px 16px;
+  flex-wrap: wrap;
+}
+.toolbar-branch {
+  flex: 1 1 100%;
+}
+.toolbar-search {
+  flex: 1 1 100%;
+}
+.toolbar-sum {
+  margin: 0;
+  font-size: 13px;
+  color: var(--a-muted);
+}
+.toolbar-sum strong {
+  color: var(--a-ink);
+}
+@media (min-width: 1024px) {
+  .toolbar-branch {
+    flex: 0 0 280px;
+  }
+  .toolbar-search {
+    flex: 0 0 260px;
+  }
+  .toolbar-sum {
+    margin: 0 0 12px auto;
+  }
+}
+.toolbar select.inp {
+  font-weight: 700;
+}
+.empty-state {
+  padding: 56px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+.empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: #f0f0f0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--a-muted);
+}
+
+.barber-grid {
+  grid-template-columns: 40px minmax(0, 1fr) 124px 112px 112px 124px 88px 68px 144px;
+}
+.barber-grid > * {
+  padding: 0 6px;
+  min-width: 0;
+}
+.thr .c,
+.tr .c {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.tr.off {
+  color: #8a9090;
+}
+.name-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+.text-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  max-width: 100%;
+}
+.price-cell {
+  position: relative;
+  padding: 8px 6px;
+}
+.price-cell .ok {
+  position: absolute;
+  right: 8px;
+  bottom: -4px;
+}
+.cell {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--a-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  cursor: text;
+}
+.cell:hover {
+  border-color: var(--a-line-strong);
+  background: #fff;
+}
+.cell.mut {
+  color: #a3aaaa;
+  font-weight: 400;
+}
+.cell.strk {
+  color: #c43535;
+  text-decoration: line-through;
+  font-weight: 500;
+}
+.cell-text {
+  width: auto;
+  max-width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.cell-text.cell-bold {
+  font-weight: 700;
+  font-size: 15px;
+}
+.tr.off .cell {
+  color: #8a9090;
+}
+.cin {
+  width: 100%;
+  height: 44px;
+  padding: 0 26px 0 8px;
+  border: 2px solid #2e80ba;
+  border-radius: 4px;
+  background: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--a-ink);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46, 128, 186, 0.18);
+}
+.cin.cin-text {
+  text-align: left;
+  padding: 0 8px;
+  font-weight: 500;
+  min-width: 120px;
+}
+.cin.strk,
+.pin.strk {
+  color: #c43535;
+  text-decoration: line-through;
+}
+.cin.err,
+.pin.err {
+  border-color: var(--a-danger);
+  background: #fffbfb;
+  box-shadow: none;
+}
+.k-suffix {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--a-muted);
+  pointer-events: none;
+}
+.cell-err {
+  margin: 4px 0 0;
+  text-align: left;
+  white-space: normal;
+}
+.ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #22603b;
+  white-space: nowrap;
+}
+.ib.dng:hover {
+  background: #fbe9e9;
+  color: #a12b2b;
+}
+.ib[disabled],
+.btn-o[disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.barber-card {
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.barber-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.barber-card-head .name-cell {
+  flex: 1;
+}
+.barber-card-prices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 10px;
+}
+.field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  min-height: 16px;
+}
+.pin {
+  width: 100%;
+  height: 44px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--a-line-strong);
+  border-radius: 5px;
+  background: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--a-ink);
+}
+.pin:focus {
+  outline: none;
+  border: 2px solid #2e80ba;
+  box-shadow: 0 0 0 3px rgba(46, 128, 186, 0.18);
+}
+.pin::placeholder {
+  color: #a3aaaa;
+  font-weight: 400;
+}
+.barber-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+.barber-card-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 44px) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+}
+.barber-card-actions .btn-o {
+  padding: 0 8px;
+  min-width: 0;
+}
+.barber-card-actions .icon-only {
+  padding: 0;
+  width: 44px;
+}
+.dialog-wide {
+  max-width: 480px;
 }

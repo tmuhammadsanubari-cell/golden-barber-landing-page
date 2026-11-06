@@ -165,6 +165,8 @@ const paths: Record<string, ReactNode> = {
       <circle cx="12" cy="18.5" r="1.7" />
     </g>
   ),
+  copy: <path d="M9 9h11v11H9zM5 15V4h11" />,
+  move: <path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4" />,
   'arrow-up': <path d="M12 19V5M6 11l6-6 6 6" />,
   'arrow-down': <path d="M12 5v14M6 13l6 6 6-6" />,
   star: (
