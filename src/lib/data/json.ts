@@ -17,7 +17,13 @@ import type {
   SiteSettings,
   Testimonial,
 } from '@/types/content';
-import { activeSorted, GALLERY_LIMIT, hasAnswer, TESTIMONIAL_LIMIT, type DataSource } from './common';
+import {
+  activeSorted,
+  GALLERY_LIMIT,
+  hasAnswer,
+  TESTIMONIAL_LIMIT,
+  type DataSource,
+} from './common';
 
 async function getBranches(): Promise<Branch[]> {
   return activeSorted(branchesJson as Branch[]);

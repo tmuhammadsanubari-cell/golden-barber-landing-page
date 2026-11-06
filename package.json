@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "typecheck": "astro check",
     "test:e2e": "playwright test",
+    "test:db": "vitest run --config vitest.integration.config.ts",
     "format": "prettier --write .",
     "seed:build": "tsx scripts/build-seed-sql.ts"
   },

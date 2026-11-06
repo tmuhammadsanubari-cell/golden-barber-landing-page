@@ -2,11 +2,12 @@
 // RLS yang membatasi: hanya baris aktif yang terbaca.
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { requireEnv } from '@/lib/env';
+import type { Database } from '@/types/database';
 
-let client: SupabaseClient | undefined;
+let client: SupabaseClient<Database> | undefined;
 
-export function getBuildClient(): SupabaseClient {
-  client ??= createClient(
+export function getBuildClient(): SupabaseClient<Database> {
+  client ??= createClient<Database>(
     requireEnv('PUBLIC_SUPABASE_URL'),
     requireEnv('PUBLIC_SUPABASE_ANON_KEY'),
     { auth: { persistSession: false, autoRefreshToken: false } },

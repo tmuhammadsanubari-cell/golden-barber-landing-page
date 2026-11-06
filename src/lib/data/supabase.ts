@@ -1,6 +1,7 @@
 // Sumber data Supabase. Bentuk keluaran sama dengan json.ts (slug, bukan id).
 // Dipanggil saat build dengan kunci anon, jadi RLS hanya meloloskan baris aktif.
 import { getBuildClient } from '@/lib/supabase/build';
+import type { Database } from '@/types/database';
 import type {
   Barber,
   Branch,
@@ -11,7 +12,13 @@ import type {
   SiteSettings,
   Testimonial,
 } from '@/types/content';
-import { activeSorted, GALLERY_LIMIT, hasAnswer, TESTIMONIAL_LIMIT, type DataSource } from './common';
+import {
+  activeSorted,
+  GALLERY_LIMIT,
+  hasAnswer,
+  TESTIMONIAL_LIMIT,
+  type DataSource,
+} from './common';
 
 const SETTING_KEYS = [
   'hero',
@@ -38,11 +45,13 @@ type WithSlug<T> = T & { branches: { slug: string } | null };
 /** Postgres mengembalikan TIME sebagai "08:00:00"; seed memakai "08:00". */
 const hhmm = (time: string) => time.slice(0, 5);
 
+type TableName = keyof Database['public']['Tables'];
+
 function fail(table: string, message: string): never {
   throw new Error(`Supabase: gagal membaca ${table}: ${message}`);
 }
 
-async function select<T>(table: string, columns: string, order = 'sort_order'): Promise<T[]> {
+async function select<T>(table: TableName, columns: string, order = 'sort_order'): Promise<T[]> {
   const query = getBuildClient().from(table).select(columns);
   const { data, error } = await (order ? query.order(order, { ascending: true }) : query);
   if (error) fail(table, error.message);
@@ -107,11 +116,17 @@ export const supabaseSource: DataSource = {
   getBranchServices,
 
   async getSettings() {
-    const rows = await select<{ key: string; value: unknown }>('site_settings', 'key, value', 'key');
+    const rows = await select<{ key: string; value: unknown }>(
+      'site_settings',
+      'key, value',
+      'key',
+    );
     const byKey = new Map(rows.map((row) => [row.key, row.value]));
     const missing = SETTING_KEYS.filter((key) => !byKey.has(key));
     if (missing.length > 0) fail('site_settings', `key belum ada: ${missing.join(', ')}`);
-    return Object.fromEntries(SETTING_KEYS.map((key) => [key, byKey.get(key)])) as unknown as SiteSettings;
+    return Object.fromEntries(
+      SETTING_KEYS.map((key) => [key, byKey.get(key)]),
+    ) as unknown as SiteSettings;
   },
 
   async getFaqs() {
