@@ -11,13 +11,13 @@ export const prerender = false;
 const SENT = { message: 'Jika email terdaftar, tautan reset password sudah dikirim.' };
 
 export const POST: APIRoute = async ({ request, locals, clientAddress }) => {
+  const parsed = forgotPasswordSchema.safeParse(await readJson(request));
+  if (!parsed.success) return validationFail(parsed.error);
+
   const limited = hit(`forgot:${clientIp({ clientAddress })}`, 3, 15 * 60_000);
   if (limited.limited) {
     return fail('RATE_LIMITED', { headers: { 'Retry-After': String(limited.retryAfter) } });
   }
-
-  const parsed = forgotPasswordSchema.safeParse(await readJson(request));
-  if (!parsed.success) return validationFail(parsed.error);
 
   const { error } = await locals.supabase.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: `${new URL(request.url).origin}/admin/reset-password`,

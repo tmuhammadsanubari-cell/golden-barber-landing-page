@@ -1,0 +1,24 @@
+---
+// Dashboard admin. Kerangka dulu; kartu ringkasan dan aksi cepat (F-15) menyusul di bagian CRUD.
+import AdminLayout from '@/layouts/AdminLayout.astro';
+
+export const prerender = false;
+
+const admin = Astro.locals.admin!;
+const today = new Intl.DateTimeFormat('id-ID', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'Asia/Jakarta',
+}).format(new Date());
+---
+
+<AdminLayout title="Dashboard" active="dashboard">
+  <div>
+    <h1 class="h1">Dashboard</h1>
+    <p style="margin:6px 0 0;font-size:14px;color:#5b6161">
+      {today} · Selamat datang kembali, {admin.full_name}.
+    </p>
+  </div>
+</AdminLayout>

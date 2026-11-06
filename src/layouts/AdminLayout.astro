@@ -1,0 +1,220 @@
+---
+// Kerangka panel admin (mockup Admin-Dashboard & Admin-State): sidebar gelap, header,
+// slot konten. `bare` = tanpa sidebar/header (halaman login & reset password).
+import '@/styles/admin.css';
+import ToastHost from '@/components/admin/ToastHost';
+import Icon from '@/components/ui/Icon';
+
+interface Props {
+  title: string;
+  /** Kunci menu aktif: dashboard | cabang | barber | layanan | galeri | testimoni | faq | leads | pengaturan | pengguna */
+  active?: string;
+  /** Teks breadcrumb header; default = title. */
+  crumb?: string;
+  bare?: boolean;
+}
+
+const { title, active, crumb, bare = false } = Astro.props;
+const admin = Astro.locals.admin;
+
+// Lencana jumlah lead baru di menu Leads (RLS: hanya admin yang bisa menghitung).
+let newLeads = 0;
+if (!bare && admin) {
+  const { count } = await Astro.locals.supabase
+    .from('leads')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'new');
+  newLeads = count ?? 0;
+}
+
+const nav = [
+  { key: 'dashboard', label: 'Dashboard', href: '/admin', icon: 'dashboard' },
+  { key: 'cabang', label: 'Cabang', href: '/admin/cabang', icon: 'pin' },
+  { key: 'barber', label: 'Barber & Harga', href: '/admin/barber', icon: 'scissors' },
+  { key: 'layanan', label: 'Layanan', href: '/admin/layanan', icon: 'lines' },
+  { key: 'galeri', label: 'Galeri', href: '/admin/galeri', icon: 'image' },
+  { key: 'testimoni', label: 'Testimoni', href: '/admin/testimoni', icon: 'message-square' },
+  { key: 'faq', label: 'FAQ', href: '/admin/faq', icon: 'help-circle' },
+  { key: 'leads', label: 'Leads', href: '/admin/leads', icon: 'inbox', count: newLeads },
+  { key: 'pengaturan', label: 'Pengaturan', href: '/admin/pengaturan', icon: 'sliders' },
+  ...(admin?.role === 'super_admin'
+    ? [{ key: 'pengguna', label: 'Pengguna', href: '/admin/pengguna', icon: 'user-cog' }]
+    : []),
+];
+
+const roleLabel = admin?.role === 'super_admin' ? 'Super Admin' : 'Editor';
+const initials = (admin?.full_name ?? '')
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((word) => word[0]!.toUpperCase())
+  .join('');
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} — Admin Golden Barber</title>
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Jost:wght@300;400;500&family=Montserrat:wght@700;800&display=swap"
+    />
+    <slot name="head" />
+  </head>
+  <body>
+    {bare ? (
+      <slot />
+    ) : (
+      <div class="shell" id="shell">
+        <aside class="sb" id="sidebar" aria-label="Navigasi admin">
+          <div style="display:flex;align-items:center;gap:12px;padding:6px 8px 0">
+            <a
+              href="/admin"
+              aria-label="Golden Barber, dashboard admin"
+              style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff"
+            >
+              <img
+                src="/brand/logo-golden-barber-white.png"
+                alt="Golden Barber"
+                width="120"
+                height="18"
+                style="height:18px;width:auto"
+              />
+              <span style="font-family:'Jost',sans-serif;font-weight:500;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:4px 7px;border:1px solid #4c5353;border-radius:4px;color:#c9cece">
+                Admin
+              </span>
+            </a>
+            <button type="button" class="ib sb-close" id="nav-close" aria-label="Tutup menu">
+              <Icon name="close" />
+            </button>
+          </div>
+          <nav aria-label="Menu admin" style="display:flex;flex-direction:column;gap:2px">
+            {nav.map((item) => (
+              <a
+                class="sn"
+                href={item.href}
+                aria-current={item.key === active ? 'page' : undefined}
+              >
+                <Icon name={item.icon} size={20} />
+                {item.label}
+                {item.count ? (
+                  <span class="cnt" aria-label={`${item.count} lead baru`}>
+                    {item.count}
+                  </span>
+                ) : null}
+              </a>
+            ))}
+          </nav>
+          <p style="margin:auto 0 0;padding:0 12px;font-size:12px;color:#a3aaaa;line-height:1.5">
+            Golden Barber Indonesia
+            <br />
+            Panel admin
+          </p>
+        </aside>
+        <div class="scrim" id="nav-scrim" aria-hidden="true" />
+        <div class="main-col">
+          <header class="hd">
+            <div style="display:flex;align-items:center;gap:8px;min-width:0">
+              <button
+                type="button"
+                class="ib menu-btn"
+                id="nav-open"
+                aria-label="Buka menu"
+                aria-expanded="false"
+                aria-controls="sidebar"
+              >
+                <Icon name="menu" />
+              </button>
+              <p class="lbl" style="display:flex;align-items:center;gap:10px;white-space:nowrap">
+                <span class="hide-sm">Panel Admin</span>
+                <span
+                  class="hide-sm"
+                  aria-hidden="true"
+                  style="width:1px;height:12px;background:#8a9090"
+                />
+                {crumb ?? title}
+              </p>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener"
+                class="hide-sm"
+                style="display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:14px;font-weight:700;text-decoration:none"
+              >
+                Lihat situs
+                <Icon name="external" size={16} />
+              </a>
+              <span
+                class="hide-sm"
+                aria-hidden="true"
+                style="width:1px;height:28px;background:#e0e0e0"
+              />
+              <div style="display:flex;align-items:center;gap:10px">
+                <span
+                  aria-hidden="true"
+                  style="width:36px;height:36px;border-radius:18px;background:#2b2f2f;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px"
+                >
+                  {initials}
+                </span>
+                <span class="who-text" style="display:flex;flex-direction:column;line-height:1.25">
+                  <strong style="font-size:14px">{admin?.full_name}</strong>
+                  <span style="font-size:12px;color:#5b6161">{roleLabel}</span>
+                </span>
+              </div>
+              <button type="button" class="btn-o btn-sm" id="logout-btn">
+                <Icon name="log-out" size={18} />
+                <span class="hide-sm">Keluar</span>
+                <span class="sr-only">Keluar dari panel admin</span>
+              </button>
+            </div>
+          </header>
+          <slot name="publishbar" />
+          <main class="page" id="main">
+            <slot />
+          </main>
+        </div>
+      </div>
+    )}
+    <ToastHost client:load />
+    <script>
+      const shell = document.getElementById('shell');
+      const openButton = document.getElementById('nav-open');
+      const closeButton = document.getElementById('nav-close');
+      const scrim = document.getElementById('nav-scrim');
+      const sidebar = document.getElementById('sidebar');
+
+      const setNav = (open: boolean) => {
+        if (!shell || !openButton) return;
+        shell.toggleAttribute('data-nav-open', open);
+        openButton.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        (open ? closeButton : openButton)?.focus();
+      };
+      openButton?.addEventListener('click', () => setNav(true));
+      closeButton?.addEventListener('click', () => setNav(false));
+      scrim?.addEventListener('click', () => setNav(false));
+      sidebar?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setNav(false);
+      });
+
+      // Keluar: POST /api/auth/logout lalu ke halaman login.
+      document.getElementById('logout-btn')?.addEventListener('click', async () => {
+        try {
+          const response = await fetch('/api/auth/logout', { method: 'POST' });
+          const body = (await response.json()) as { data?: { redirect?: string } };
+          window.location.assign(body.data?.redirect ?? '/admin/login');
+        } catch {
+          window.location.assign('/admin/login');
+        }
+      });
+    </script>
+  </body>
+</html>
