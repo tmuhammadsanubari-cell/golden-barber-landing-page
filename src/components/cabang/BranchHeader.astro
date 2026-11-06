@@ -1,0 +1,121 @@
+---
+// Breadcrumb + judul cabang + tombol aksi + foto (mockup Cabang-Dago, PRD F-13).
+import { Image } from 'astro:assets';
+import Badge from '@/components/ui/Badge';
+import Icon from '@/components/ui/Icon';
+import { haircutRange, REGION_LABELS } from '@/lib/branches';
+import { buildMapsUrl, formatAddress } from '@/lib/maps';
+import { formatHours } from '@/lib/format';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Barber, Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  branch: Branch;
+  barbers: Barber[];
+  settings: SiteSettings;
+}
+
+const { branch, barbers, settings } = Astro.props;
+const range = haircutRange(barbers);
+const wa = whatsAppLinkProps({ context: 'branch', settings, branch });
+---
+
+<section class="wrap pb-10 lg:pb-[72px]">
+  <nav aria-label="Breadcrumb" class="bc">
+    <ol class="m-0 flex list-none items-center gap-2 p-0 text-sm lg:gap-2.5">
+      <li>
+        <a href="/">Beranda</a>
+      </li>
+      <li aria-hidden="true" class="text-sep">
+        /
+      </li>
+      <li>
+        <a href="/#cabang">Cabang</a>
+      </li>
+      <li aria-hidden="true" class="text-sep">
+        /
+      </li>
+      <li aria-current="page" class="font-bold">
+        {branch.name}
+      </li>
+    </ol>
+  </nav>
+
+  <div class="mt-4 flex flex-col gap-4 lg:mt-7 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+    <div class="flex flex-col gap-4 lg:gap-[18px]">
+      <p class="lbl m-0 flex flex-wrap items-center gap-x-3 gap-y-2 !text-[11px] lg:!text-[13px]">
+        <span>Cabang {REGION_LABELS[branch.region]}</span>
+        <span aria-hidden="true" class="h-3 w-px bg-sep lg:h-3.5"></span>
+        <span>
+          {range ? (
+            <>
+              <span class="hidden lg:inline">Haircut Reguler </span>
+              {range}
+            </>
+          ) : (
+            'Pricelist segera hadir'
+          )}
+        </span>
+        {branch.is_flagship && <Badge variant="pusat">Pusat</Badge>}
+        {branch.is_new && <Badge variant="baru">Cabang Baru</Badge>}
+      </p>
+      <h1 class="m-0 font-display text-[38px] leading-[1.04] font-extrabold tracking-[-0.02em] lg:text-[68px] lg:leading-none">
+        Golden Barber <span class="text-accent">{branch.name}</span>
+      </h1>
+      <div class="flex flex-col gap-2.5 text-base lg:flex-row lg:flex-wrap lg:gap-x-8 lg:text-[17px]">
+        <p class="m-0 flex items-start gap-2.5 leading-normal">
+          <span class="mt-0.5 flex-none text-ink-muted">
+            <Icon name="pin" />
+          </span>
+          <span>
+            {formatAddress(branch)}
+            {branch.address_incomplete && (
+              <span class="block text-[13px] text-ink-muted italic">
+                Alamat lengkap: tanyakan via WhatsApp
+              </span>
+            )}
+          </span>
+        </p>
+        <p class="m-0 flex items-center gap-2.5 text-ink-muted">
+          <span class="flex-none">
+            <Icon name="clock" />
+          </span>
+          Setiap hari {formatHours(branch.open_time, branch.close_time)}
+        </p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2.5 lg:flex-none lg:flex-row lg:gap-3">
+      <a class="btn !min-h-14 !text-[17px] lg:!px-[26px]" {...wa}>
+        <Icon name="whatsapp" size={22} />
+        Booking via WhatsApp
+      </a>
+      <a
+        class="btn-o !min-h-14 !text-[17px] lg:!px-6"
+        href={buildMapsUrl(branch)}
+        target="_blank"
+        rel="noopener"
+      >
+        <Icon name="navigation" />
+        Petunjuk Arah
+      </a>
+    </div>
+  </div>
+
+  <div class="ph relative -mx-5 mt-1 h-60 overflow-hidden lg:mx-0 lg:mt-10 lg:h-[520px] lg:rounded-gb">
+    {branch.photo_path && (
+      <Image
+        src={branch.photo_path}
+        alt={`Tampak cabang Golden Barber ${branch.name}${branch.photo_is_placeholder ? ' (ilustrasi)' : ''}`}
+        width={1280}
+        height={520}
+        loading="eager"
+        class="size-full object-cover"
+      />
+    )}
+    {branch.photo_is_placeholder && (
+      <Badge variant="photo" className="absolute bottom-3.5 left-5 lg:bottom-[22px] lg:left-[22px]">
+        Ilustrasi · Cabang {branch.name}
+      </Badge>
+    )}
+  </div>
+</section>

@@ -17,7 +17,9 @@ async function pickBranch(page: Page, slug: string, name: string) {
   if (isMobile(page)) {
     await page.selectOption('#pricelist-cabang', slug);
   } else {
-    await pricelist(page).getByRole('button', { name: new RegExp(`^${name} `) }).click();
+    await pricelist(page)
+      .getByRole('button', { name: new RegExp(`^${name} `) })
+      .click();
   }
 }
 
@@ -71,7 +73,9 @@ test.describe('landing page', () => {
       'Halo Golden Barber Dipatiukur, saya mau booking Haircut Reguler dengan barber Aditia (130K). Kapan slot yang tersedia?',
     );
     await expect(pricelist(page).locator('s:visible').first()).toContainText('150K');
-    await expect(pricelist(page).getByLabel('Rp130.000').locator('visible=true').first()).toBeVisible();
+    await expect(
+      pricelist(page).getByLabel('Rp130.000').locator('visible=true').first(),
+    ).toBeVisible();
   });
 
   test('pilih cabang: tabel berubah, URL & layanan ikut', async ({ page }) => {
@@ -140,8 +144,15 @@ test.describe('landing page', () => {
     await expect(firstAnswer).toBeVisible();
     await page.locator('#faq summary').first().click();
     await expect(firstAnswer).toBeHidden();
-    const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
-    expect(JSON.parse(jsonLd!).mainEntity).toHaveLength(6);
+    const faqPages = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((nodes) =>
+        nodes
+          .map((node) => JSON.parse(node.textContent!))
+          .filter((ld) => ld['@type'] === 'FAQPage'),
+      );
+    expect(faqPages).toHaveLength(1);
+    expect(faqPages[0].mainEntity).toHaveLength(6);
   });
 
   test('form Academy: error per field, lalu sukses + lanjut WA', async ({ page }) => {

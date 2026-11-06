@@ -549,6 +549,68 @@
     transform: rotate(180deg);
   }
 
+  /* Halaman cabang & 404 (mockup Cabang-Dago, 404). */
+  .map {
+    background-color: #dadcdc;
+    background-image:
+      linear-gradient(28deg, transparent 47%, #f4f4f4 47%, #f4f4f4 53%, transparent 53%),
+      linear-gradient(90deg, transparent 48%, #fff 48%, #fff 52%, transparent 52%),
+      repeating-linear-gradient(0deg, transparent 0 46px, #efefef 46px 51px),
+      repeating-linear-gradient(90deg, transparent 0 64px, #efefef 64px 69px);
+  }
+  .ci {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .bc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--color-ink-muted);
+    text-decoration: none;
+  }
+  .bc a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+  }
+  .ql {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 0 20px;
+    border-top: 1px solid var(--color-line);
+    text-decoration: none;
+    color: var(--color-ink);
+    font-size: 16px;
+  }
+  .ql:hover {
+    background: #fff;
+    color: var(--color-accent-strong);
+  }
+
+  @media (min-width: 1024px) {
+    .map {
+      background-image:
+        linear-gradient(28deg, transparent 47%, #f4f4f4 47%, #f4f4f4 53%, transparent 53%),
+        linear-gradient(90deg, transparent 48.5%, #fff 48.5%, #fff 51.5%, transparent 51.5%),
+        repeating-linear-gradient(0deg, transparent 0 58px, #efefef 58px 64px),
+        repeating-linear-gradient(90deg, transparent 0 86px, #efefef 86px 92px);
+    }
+    .ci {
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 14px;
+      padding: 18px 0;
+    }
+    .ql {
+      padding: 0 24px;
+    }
+  }
+
   .ft a {
     color: #e6e8e8;
     text-decoration: none;

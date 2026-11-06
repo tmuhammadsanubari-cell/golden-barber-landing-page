@@ -23,6 +23,7 @@ import {
   getSettings,
   getTestimonials,
 } from '@/lib/data';
+import { buildOrganizationJsonLd, serializeJsonLd } from '@/lib/seo';
 
 const [settings, branches, barbers, services, branchServices, faqs, gallery, testimonials] =
   await Promise.all([
@@ -38,9 +39,14 @@ const [settings, branches, barbers, services, branchServices, faqs, gallery, tes
 
 const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
 const flagshipBarbers = barbers.filter((barber) => barber.branch_slug === flagship.slug);
+
+const siteUrl = String(Astro.site).replace(/\/$/, '');
+const organizationJsonLd = buildOrganizationJsonLd(branches, barbers, { siteUrl, settings });
 ---
 
 <BaseLayout title={settings.seo_defaults.title} description={settings.seo_defaults.description}>
+  <script slot="head" type="application/ld+json" set:html={serializeJsonLd(organizationJsonLd)} />
+  {/* JSON-LD FAQPage dipancarkan oleh komponen Faq. */}
   <Navbar settings={settings} flagship={flagship} />
   <main>
     <Hero

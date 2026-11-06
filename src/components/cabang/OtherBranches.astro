@@ -1,0 +1,84 @@
+---
+// Daftar cabang lain di wilayah yang sama (PRD F-13).
+import Badge from '@/components/ui/Badge';
+import Icon from '@/components/ui/Icon';
+import { REGION_LABELS } from '@/lib/branches';
+import { formatAddress } from '@/lib/maps';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  branch: Branch;
+  branches: Branch[];
+  settings: SiteSettings;
+}
+
+const { branch, branches, settings } = Astro.props;
+const others = branches.filter(
+  (other) => other.region === branch.region && other.slug !== branch.slug,
+);
+const region = REGION_LABELS[branch.region];
+---
+
+{others.length > 0 && (
+  <section aria-labelledby="lain-h">
+    <div class="wrap pt-12 pb-14 lg:pt-24 lg:pb-28">
+      <div class="mb-4 flex flex-col gap-4 lg:mb-9 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+        <div class="flex flex-col gap-4 lg:gap-3.5">
+          <p class="lbl m-0 !text-[11px] lg:!text-[13px]">
+            {region}
+            <span
+              aria-hidden="true"
+              class="mx-2.5 inline-block h-3 w-px bg-sep align-[-1px] lg:mx-3 lg:h-[13px]"
+            />
+            {others.length} cabang lain
+          </p>
+          <h2 id="lain-h" class="h2">
+            Cabang lain di {region}
+          </h2>
+        </div>
+        <a
+          href="/#cabang"
+          class="hidden min-h-11 items-center gap-2 font-bold no-underline lg:inline-flex"
+        >
+          Lihat semua {branches.length} cabang
+          <Icon name="chevron-right" size={18} />
+        </a>
+      </div>
+      <div class="grid gap-3 lg:grid-cols-3 lg:gap-5">
+        {others.map((other) => (
+          <article class="card flex flex-col gap-2 px-[18px] py-4 lg:gap-3 lg:p-[22px]">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="m-0 font-display text-[17px] font-extrabold uppercase lg:text-xl">
+                {other.name}
+              </h3>
+              {other.is_flagship && <Badge variant="pusat">Pusat</Badge>}
+              {other.is_new && <Badge variant="baru">Cabang Baru</Badge>}
+            </div>
+            <p class="m-0 flex items-start gap-2.5 text-sm leading-normal text-ink-muted lg:text-[15px] lg:text-ink">
+              <span class="mt-0.5 hidden flex-none text-ink-muted lg:block">
+                <Icon name="pin" size={18} />
+              </span>
+              {formatAddress(other)}
+            </p>
+            <div class="mt-auto grid grid-cols-2 gap-2 pt-1 lg:pt-1.5">
+              <a class="btn-o btn-s" href={`/cabang/${other.slug}`}>
+                Lihat Cabang
+              </a>
+              <a
+                class="btn btn-s"
+                aria-label={`Booking WA cabang ${other.name}`}
+                {...whatsAppLinkProps({ context: 'branch', settings, branch: other })}
+              >
+                Booking WA
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <a href="/#cabang" class="btn-o mt-3 lg:hidden">
+        Lihat semua {branches.length} cabang
+      </a>
+    </div>
+  </section>
+)}

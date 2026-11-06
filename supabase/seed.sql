@@ -349,7 +349,7 @@ values
   ('academy_section', '{"title":"Golden Academy — Tempat Belajar Nyukur","description":"Ingin jadi barber profesional? Golden Academy membuka kesempatan belajar mencukur langsung dari tim Golden Barber. Isi form minat dan tim kami akan menghubungimu dengan info kelas terbaru.","is_details_available":false}'::jsonb),
   ('partnership_section', '{"title":"Buka Golden Barber di Kotamu","description":"Dari satu barbershop di Dipatiukur, Golden Barber kini hadir di 11 cabang di Bandung Raya dan Jabodetabek. Tertarik bermitra? Kirim minatmu dan tim manajemen akan menghubungi."}'::jsonb),
   ('media_mentions', '[{"title":"Ini Dia Barbershop Langganan Pemain Persib","outlet":"Bola.net","year":2016,"url":"https://www.bola.net/bolatainment/ini-dia-barbershop-langganan-pemain-persib-3ec520.html"}]'::jsonb),
-  ('seo_defaults', '{"title":"Golden Barber — Barbershop di Bandung & Jabodetabek | 11 Cabang","description":"Golden Barber: barbershop asal Dipatiukur Bandung, kini 11 cabang. Lihat pricelist per barber dan booking langsung via WhatsApp. Buka setiap hari 08.00–23.00.","og_image":"/brand/og-default.jpg"}'::jsonb)
+  ('seo_defaults', '{"title":"Golden Barber — 11 Cabang Barbershop Bandung & Jabodetabek","description":"Golden Barber: barbershop asal Dipatiukur Bandung, kini 11 cabang. Lihat pricelist per barber dan booking langsung via WhatsApp. Buka setiap hari 08.00–23.00.","og_image":"/brand/og-default.jpg"}'::jsonb)
 on conflict (key) do nothing;
 
 commit;

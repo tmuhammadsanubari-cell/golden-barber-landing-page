@@ -1,0 +1,85 @@
+---
+// Matriks layanan satu cabang (PRD F-13). Memakai ulang kartu dari PricelistPicker, nol JS.
+import Icon from '@/components/ui/Icon';
+import { BranchServicesList, summarizeServices } from '@/components/landing/PricelistPicker';
+import type { Branch, BranchService, Service, SiteSettings } from '@/types/content';
+
+interface Props {
+  branch: Branch;
+  services: Service[];
+  branchServices: BranchService[];
+  settings: SiteSettings;
+}
+
+const { branch, services, branchServices, settings } = Astro.props;
+
+const pickerBranch = {
+  slug: branch.slug,
+  name: branch.name,
+  whatsapp_number: branch.whatsapp_number,
+  is_flagship: branch.is_flagship,
+};
+const pickerServices = services.map(
+  ({ slug, name, category, price_type, price_min, price_max, note }) => ({
+    slug,
+    name,
+    category,
+    price_type,
+    price_min,
+    price_max,
+    note,
+  }),
+);
+const statusOf = Object.fromEntries(
+  branchServices
+    .filter((row) => row.branch_slug === branch.slug)
+    .map((row) => [
+      row.service_slug,
+      { status: row.status, min: row.price_override_min, max: row.price_override_max },
+    ]),
+);
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+
+const summary = summarizeServices(pickerServices, statusOf);
+const allAvailable = summary.shown === summary.total && summary.soon === 0;
+const pill = allAvailable
+  ? `Semua layanan tersedia di ${branch.name}`
+  : summary.shown > 0
+    ? `${summary.shown - summary.soon} layanan tersedia${summary.soon > 0 ? ` · ${summary.soon} segera hadir` : ''}`
+    : null;
+---
+
+<section aria-labelledby="lay-h" class="border-y border-line bg-alt">
+  <div class="wrap py-12 lg:py-24">
+    <div class="mb-4 flex flex-col gap-4 lg:mb-9 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+      <div class="flex flex-col gap-4 lg:gap-3.5">
+        <p class="lbl m-0 !text-[11px] lg:!text-[13px]">
+          Layanan
+          <span
+            aria-hidden="true"
+            class="mx-2.5 inline-block h-3 w-px bg-sep align-[-1px] lg:mx-3 lg:h-[13px]"
+          ></span>
+          Cabang {branch.name}
+        </p>
+        <h2 id="lay-h" class="h2">
+          Layanan di cabang ini
+        </h2>
+      </div>
+      {pill && (
+        <p class="m-0 inline-flex items-center gap-2 self-start rounded-[5px] border border-accent-strong bg-accent-soft px-3.5 py-2.5 text-sm font-bold text-accent-strong lg:gap-2.5 lg:px-4 lg:text-[15px]">
+          <Icon name="check" size={18} />
+          {pill}
+        </p>
+      )}
+    </div>
+    <BranchServicesList
+      branch={pickerBranch}
+      services={pickerServices}
+      statusOf={statusOf}
+      settings={waSettings}
+    />
+  </div>
+</section>

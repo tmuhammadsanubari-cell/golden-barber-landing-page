@@ -112,6 +112,14 @@ const hours = formatHours(branches[0]!.open_time, branches[0]!.close_time);
                     Lihat Harga
                   </a>
                 </div>
+                <a
+                  class="inline-flex min-h-11 items-center justify-center gap-1 text-sm font-bold"
+                  href={`/cabang/${branch.slug}`}
+                  aria-label={`Detail cabang ${branch.name}`}
+                >
+                  Detail Cabang
+                  <Icon name="chevron-right" size={16} />
+                </a>
               </article>
             ))}
           </div>

@@ -1,0 +1,106 @@
+---
+// Halaman 404 berdesain brand (PRD F-13, mockup 404). Tidak diindeks.
+import Icon from '@/components/ui/Icon';
+import Navbar from '@/components/landing/Navbar.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getBranches, getSettings } from '@/lib/data';
+import { formatPhoneDisplay, whatsAppLinkProps } from '@/lib/whatsapp';
+
+const [settings, branches] = await Promise.all([getSettings(), getBranches()]);
+const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
+const instagram = settings.social_links.instagram;
+const instagramHandle = instagram.replace(/\/$/, '').split('/').pop()!.replace(/^@/, '');
+const year = new Date().getFullYear();
+
+const quickLinks = [
+  {
+    title: 'Cabang Kami',
+    description: `${branches.length} cabang di Bandung Raya & Jabodetabek`,
+    href: '/#cabang',
+  },
+  { title: 'Pricelist', description: 'Harga per barber di tiap cabang', href: '/#harga' },
+  { title: 'Golden Academy', description: 'Tempat belajar nyukur', href: '/#academy' },
+  { title: 'Kemitraan', description: 'Buka Golden Barber di kotamu', href: '/#kemitraan' },
+];
+---
+
+<BaseLayout
+  title="Halaman tidak ditemukan — Golden Barber"
+  description="Halaman yang kamu cari tidak ada. Cari cabang Golden Barber terdekat atau booking lewat WhatsApp."
+  noindex
+>
+  <div class="flex min-h-screen flex-col">
+    <Navbar settings={settings} flagship={flagship} home={false} />
+    <main class="wrap grid w-full flex-1 content-center gap-10 py-14 lg:grid-cols-[7fr_5fr] lg:items-center lg:gap-20 lg:py-[72px]">
+      <div class="flex flex-col gap-[18px] lg:gap-[26px]">
+        <p class="lbl m-0 flex items-center gap-2.5 !text-[11px] lg:gap-3.5 lg:!text-[13px]">
+          Error 404
+          <span aria-hidden="true" class="h-3 w-px bg-sep lg:h-4"></span>
+          Salah potong jalan
+        </p>
+        <p
+          aria-hidden="true"
+          class="m-0 font-display text-[128px] leading-[0.85] font-extrabold tracking-[-0.04em] text-accent lg:text-[200px]"
+        >
+          404
+        </p>
+        <h1 class="m-0 font-display text-[34px] leading-[1.08] font-extrabold lg:text-[56px] lg:leading-[1.05] lg:tracking-[-0.01em]">
+          Halaman tidak ditemukan
+        </h1>
+        <p class="body-text m-0 max-w-[600px] !text-base !leading-[1.6] lg:!text-[19px]">
+          Tautannya mungkin sudah berubah atau halaman ini sudah tidak ada. Cari cabang Golden
+          Barber terdekat, atau langsung booking lewat WhatsApp.
+        </p>
+        <div class="mt-2.5 flex flex-col gap-2.5 lg:mt-1.5 lg:flex-row lg:flex-wrap lg:gap-3.5">
+          <a class="btn !min-h-14 !text-[17px]" href="/#cabang">
+            <Icon name="pin" />
+            Lihat Semua Cabang
+          </a>
+          <a
+            class="btn-o !min-h-14 !text-[17px]"
+            {...whatsAppLinkProps({ context: 'general', settings })}
+          >
+            <Icon name="whatsapp" />
+            Booking via WhatsApp
+          </a>
+        </div>
+      </div>
+      <nav aria-label="Tautan cepat" class="card hidden overflow-hidden lg:block">
+        <p class="m-0 px-6 pt-6 pb-[18px] font-display text-[22px] font-extrabold text-accent uppercase">
+          Mungkin kamu mencari
+        </p>
+        {quickLinks.map((link) => (
+          <a class="ql" href={link.href}>
+            <span>
+              <strong class="block font-bold">{link.title}</strong>
+              <span class="text-sm text-ink-muted">{link.description}</span>
+            </span>
+            <Icon name="chevron-right" />
+          </a>
+        ))}
+      </nav>
+    </main>
+    <footer class="bg-dark text-dark-text">
+      <div class="wrap flex items-center justify-between gap-6 py-4 text-[13px] lg:py-3 lg:text-sm">
+        <p class="m-0">© {year} Golden Barber Indonesia</p>
+        <p class="m-0 flex gap-6">
+          <a
+            class="inline-flex min-h-11 items-center text-[#e6e8e8] no-underline"
+            {...whatsAppLinkProps({ context: 'general', settings })}
+          >
+            <span class="hidden lg:inline">WA {formatPhoneDisplay(settings.whatsapp_number)}</span>
+            <span class="lg:hidden">WhatsApp</span>
+          </a>
+          <a
+            class="inline-flex min-h-11 items-center text-[#e6e8e8] no-underline"
+            href={instagram}
+            target="_blank"
+            rel="noopener"
+          >
+            @{instagramHandle}
+          </a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
