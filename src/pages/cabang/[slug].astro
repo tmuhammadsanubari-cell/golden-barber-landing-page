@@ -1,0 +1,56 @@
+---
+// Halaman detail cabang (PRD F-13). Statis: satu halaman per cabang aktif saat build.
+import BranchHeader from '@/components/cabang/BranchHeader.astro';
+import BranchLocation from '@/components/cabang/BranchLocation.astro';
+import BranchPricelist from '@/components/cabang/BranchPricelist.astro';
+import BranchServices from '@/components/cabang/BranchServices.astro';
+import OtherBranches from '@/components/cabang/OtherBranches.astro';
+import FloatingWhatsApp from '@/components/landing/FloatingWhatsApp.astro';
+import Footer from '@/components/landing/Footer.astro';
+import Navbar from '@/components/landing/Navbar.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getBarbers, getBranchServices, getBranches, getServices, getSettings } from '@/lib/data';
+import { branchDescription, branchTitle, buildHairSalonJsonLd, serializeJsonLd } from '@/lib/seo';
+
+export async function getStaticPaths() {
+  // Satu kali ambil data untuk semua halaman (hemat query saat build dari Supabase).
+  const [settings, branches, barbers, services, branchServices] = await Promise.all([
+    getSettings(),
+    getBranches(),
+    getBarbers(),
+    getServices(),
+    getBranchServices(),
+  ]);
+  return branches.map((branch) => ({
+    params: { slug: branch.slug },
+    props: { branch, settings, branches, barbers, services, branchServices },
+  }));
+}
+
+const { branch, settings, branches, barbers, services, branchServices } = Astro.props;
+const branchBarbers = barbers.filter((barber) => barber.branch_slug === branch.slug);
+const flagship = branches.find((item) => item.is_flagship) ?? branches[0]!;
+const siteUrl = String(Astro.site).replace(/\/$/, '');
+const jsonLd = buildHairSalonJsonLd(branch, branchBarbers, { siteUrl, settings });
+---
+
+<BaseLayout title={branchTitle(branch)} description={branchDescription(branch)}>
+  <script slot="head" type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />
+  <Navbar settings={settings} flagship={flagship} home={false} />
+  <main id="top">
+    <BranchHeader branch={branch} barbers={branchBarbers} settings={settings} />
+    <BranchLocation branch={branch} settings={settings} />
+    <BranchPricelist branch={branch} barbers={barbers} settings={settings} />
+    <BranchServices
+      branch={branch}
+      services={services}
+      branchServices={branchServices}
+      settings={settings}
+    />
+    <OtherBranches branch={branch} branches={branches} settings={settings} />
+  </main>
+  <Footer settings={settings} branches={branches} currentSlug={branch.slug} />
+  <aside aria-label="Booking cepat">
+    <FloatingWhatsApp settings={settings} branch={branch} />
+  </aside>
+</BaseLayout>

@@ -3,5 +3,6 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  test: { include: ['tests/unit/**/*.test.ts'] },
+  // Unit test selalu pakai seed JSON, tanpa jaringan.
+  test: { include: ['tests/unit/**/*.test.ts'], env: { DATA_SOURCE: 'json' } },
 });

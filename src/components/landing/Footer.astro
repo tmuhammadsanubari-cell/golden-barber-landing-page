@@ -8,9 +8,11 @@ import type { Branch, Region, SiteSettings } from '@/types/content';
 interface Props {
   settings: SiteSettings;
   branches: Branch[];
+  /** Slug cabang yang sedang dibuka (halaman /cabang/[slug]). */
+  currentSlug?: string;
 }
 
-const { settings, branches } = Astro.props;
+const { settings, branches, currentSlug } = Astro.props;
 const { social_links: social } = settings;
 const wa = whatsAppLinkProps({ context: 'general', settings });
 const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
@@ -57,9 +59,12 @@ const year = new Date().getFullYear();
                 .map((branch) => (
                   <li>
                     <a
-                      href={`/?cabang=${branch.slug}#harga`}
-                      data-pick-branch={branch.slug}
-                      class="inline-flex min-h-11 min-w-11 items-center lg:min-h-8"
+                      href={`/cabang/${branch.slug}`}
+                      aria-current={branch.slug === currentSlug ? 'page' : undefined}
+                      class:list={[
+                        'inline-flex min-h-11 min-w-11 items-center lg:min-h-8',
+                        branch.slug === currentSlug && '!font-bold !text-white',
+                      ]}
                     >
                       {branch.name}
                       {suffix(branch)}
@@ -94,8 +99,13 @@ const year = new Date().getFullYear();
         </ul>
       </div>
     </div>
-    <p class="mt-4 mb-0 text-[13px] text-dark-muted lg:mt-6 lg:text-sm">
-      © {year} Golden Barber Indonesia. Hak cipta dilindungi.
-    </p>
+    <div
+      class="mt-4 flex flex-col-reverse gap-1 text-[13px] text-dark-muted lg:mt-6 lg:flex-row lg:items-center lg:justify-between lg:text-sm"
+    >
+      <p class="m-0">© {year} Golden Barber Indonesia. Hak cipta dilindungi.</p>
+      <a href="/kebijakan-privasi" class="inline-flex min-h-11 items-center self-start !text-dark-muted">
+        Kebijakan Privasi
+      </a>
+    </div>
   </div>
 </footer>

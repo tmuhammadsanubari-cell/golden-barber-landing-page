@@ -1,0 +1,132 @@
+---
+// Pricelist satu cabang: tabel + kolom samping "Sudah termasuk" (mockup Cabang-Dago, D-11).
+// Memakai ulang tabel dari PricelistPicker tanpa `client:`, jadi nol JS.
+import Icon from '@/components/ui/Icon';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Barber, Branch, SiteSettings } from '@/types/content';
+import { BranchPricelistTable } from '@/components/landing/PricelistPicker';
+
+interface Props {
+  branch: Branch;
+  barbers: Barber[];
+  settings: SiteSettings;
+}
+
+const { branch, barbers, settings } = Astro.props;
+const rows = barbers.filter((barber) => barber.branch_slug === branch.slug);
+const hasGeneric = rows.some((barber) => barber.is_generic);
+
+const picker = {
+  slug: branch.slug,
+  name: branch.name,
+  whatsapp_number: branch.whatsapp_number,
+  is_flagship: branch.is_flagship,
+};
+const pickerBarbers = rows.map((barber) => ({
+  branch_slug: barber.branch_slug,
+  name: barber.name,
+  is_generic: barber.is_generic,
+  haircut_price: barber.haircut_price,
+  haircut_original_price: barber.haircut_original_price,
+  long_trim_price: barber.long_trim_price,
+}));
+const waSettings = {
+  whatsapp_number: settings.whatsapp_number,
+  whatsapp_templates: settings.whatsapp_templates,
+};
+---
+
+<section id="harga" aria-labelledby="harga-h">
+  <div class="wrap py-12 lg:py-24">
+    <div class="mb-4 flex flex-col gap-4 lg:mb-9 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+      <div class="flex flex-col gap-4 lg:gap-3.5">
+        <p class="lbl m-0 !text-[11px] lg:!text-[13px]">
+          Pricelist {branch.name}
+          <span
+            aria-hidden="true"
+            class="mx-2.5 inline-block h-3 w-px bg-sep align-[-1px] lg:mx-3 lg:h-[13px]"
+          ></span>
+          Harga per barber
+        </p>
+        <h2 id="harga-h" class="h2">
+          Pilih Barbermu
+        </h2>
+      </div>
+      {rows.length > 0 && (
+        <p class="body-text hidden max-w-[420px] lg:block">
+          Harga per barber di cabang {branch.name}. Tekan Booking untuk langsung chat admin dengan
+          nama barber pilihanmu.
+        </p>
+      )}
+    </div>
+
+    <div
+      class:list={['grid items-start gap-4 lg:gap-6', rows.length > 0 && 'lg:grid-cols-[8fr_4fr]']}
+    >
+      <div>
+        <div
+          class:list={[
+            'mb-4 flex flex-col gap-1.5 rounded-gb border border-line bg-white px-4 py-3.5 lg:hidden',
+            rows.length === 0 && 'hidden',
+          ]}
+        >
+          <span class="lbl !text-[11px] !font-medium !text-accent-strong">Sudah termasuk</span>
+          <span class="text-[15px] leading-[1.55]">{settings.haircut_includes.join(' · ')}</span>
+        </div>
+        <BranchPricelistTable branch={picker} barbers={pickerBarbers} settings={waSettings} />
+        {rows.length > 0 && (
+          <div class="mt-4 flex flex-col gap-1.5 text-[13px] leading-normal text-ink-muted lg:hidden">
+            {hasGeneric && (
+              <p class="m-0">
+                <strong class="text-ink">By Barber</strong>: dilayani barber yang tersedia.
+              </p>
+            )}
+            <p class="m-0">
+              Harga dalam ribuan rupiah (130K = Rp130.000). Ikon WA = booking barber tsb.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {rows.length > 0 && (
+        <aside class="hidden flex-col gap-4 lg:flex">
+          <div class="card !bg-white p-6">
+            <p class="lbl m-0 mb-3.5 !font-medium !text-accent-strong">Sudah termasuk</p>
+            <ul class="m-0 flex list-none flex-col gap-3 p-0 text-base">
+              {settings.haircut_includes.map((item) => (
+                <li class="flex items-center gap-2.5">
+                  <span class="text-accent-strong">
+                    <Icon name="check" size={18} />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="flex flex-col gap-2.5 px-1 text-sm leading-normal text-ink-muted">
+            {hasGeneric && (
+              <p class="m-0 flex items-start gap-2">
+                <span class="text-accent-strong">
+                  <Icon name="info" size={16} />
+                </span>
+                <span>
+                  <strong class="text-ink">By Barber</strong>: dilayani barber yang tersedia.
+                </span>
+              </p>
+            )}
+            <p class="m-0">Harga dalam ribuan rupiah (130K = Rp130.000).</p>
+          </div>
+          <div class="flex flex-col gap-3.5 rounded-gb border border-line p-6">
+            <p class="m-0 font-display text-lg font-bold">Belum tahu pilih siapa?</p>
+            <p class="body-text !text-[15px]">
+              Chat admin {branch.name} — kami bantu rekomendasikan barber sesuai gaya yang kamu mau.
+            </p>
+            <a class="btn" {...whatsAppLinkProps({ context: 'branch', settings, branch })}>
+              Booking via WhatsApp
+            </a>
+          </div>
+        </aside>
+      )}
+    </div>
+  </div>
+</section>

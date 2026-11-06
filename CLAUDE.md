@@ -35,6 +35,7 @@ npm run lint         # ESLint
 npm run typecheck    # astro check
 npm run test         # Vitest
 npm run test:e2e     # Playwright
+npm run test:db      # uji ke database Supabase sungguhan (RLS, data identik seed); butuh .env
 npx supabase gen types typescript --project-id <ref> > src/types/database.ts
 ```
 

@@ -1,0 +1,138 @@
+---
+// Peta + kartu kontak. Iframe peta lazy dan hanya ada bila maps_embed_url terisi (PRD F-13).
+import Icon from '@/components/ui/Icon';
+import { formatHours } from '@/lib/format';
+import { buildMapsUrl, formatAddress } from '@/lib/maps';
+import { formatPhoneDisplay, normalizePhone, whatsAppLinkProps } from '@/lib/whatsapp';
+import type { Branch, SiteSettings } from '@/types/content';
+
+interface Props {
+  branch: Branch;
+  settings: SiteSettings;
+}
+
+const { branch, settings } = Astro.props;
+const mapsUrl = buildMapsUrl(branch);
+const wa = whatsAppLinkProps({ context: 'branch', settings, branch });
+const phone = formatPhoneDisplay(
+  normalizePhone(branch.whatsapp_number ?? settings.whatsapp_number),
+);
+const instagram = settings.social_links.instagram;
+const instagramHandle = instagram.replace(/\/$/, '').split('/').pop()!.replace(/^@/, '');
+---
+
+<section aria-labelledby="lok-h" class="border-y border-line bg-alt">
+  <div class="wrap py-10 lg:py-[88px]">
+    <p class="lbl m-0 mb-3.5 !text-[11px] lg:!text-[13px]">
+      Lokasi
+      <span
+        aria-hidden="true"
+        class="mx-2.5 inline-block h-3 w-px bg-sep align-[-1px] lg:mx-3 lg:h-[13px]"
+      ></span>
+      Kontak
+    </p>
+    <h2 id="lok-h" class="h2 mb-4 lg:mb-9">
+      Temukan kami di {branch.name}.
+    </h2>
+
+    <div class="grid gap-4 lg:grid-cols-[7fr_5fr] lg:items-stretch lg:gap-6">
+      {branch.maps_embed_url ? (
+        <iframe
+          src={branch.maps_embed_url}
+          title={`Peta lokasi Golden Barber ${branch.name}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+          class="h-[260px] w-full rounded-gb border border-line lg:h-auto lg:min-h-[460px]"
+        />
+      ) : (
+        <div class="map relative h-[260px] overflow-hidden rounded-gb border border-line lg:h-auto lg:min-h-[460px]">
+          <span class="tag tag-photo absolute top-3 left-3 !text-[10px] lg:top-4 lg:left-4 lg:!text-[11px]">
+            Ilustrasi peta
+          </span>
+          <div class="absolute top-[55%] left-1/2 flex -translate-x-1/2 -translate-y-full flex-col items-center gap-1 lg:top-1/2 lg:gap-1.5">
+            <span class="rounded-[5px] border border-line bg-white px-2.5 py-1.5 font-display text-[13px] font-bold whitespace-nowrap lg:px-3 lg:py-2 lg:text-sm">
+              Golden Barber {branch.name}
+            </span>
+            <svg width="40" height="48" viewBox="0 0 24 28" aria-hidden="true">
+              <path d="M12 27s-9-8.2-9-15a9 9 0 0 1 18 0c0 6.8-9 15-9 15z" fill="#1F6497" />
+              <circle cx="12" cy="12" r="3.4" fill="#FFFFFF" />
+            </svg>
+          </div>
+          <a
+            class="btn-o btn-s absolute right-3 bottom-3 !bg-white lg:right-4 lg:bottom-4"
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener"
+          >
+            Buka di Google Maps
+          </a>
+        </div>
+      )}
+
+      <div class="card flex flex-col !bg-white px-[18px] pt-1 pb-[18px] lg:px-8 lg:pt-3 lg:pb-8">
+        <div class="ci !border-t-0">
+          <span class="text-accent-strong">
+            <Icon name="pin" size={22} strokeWidth={1.5} />
+          </span>
+          <div>
+            <p class="lbl m-0 mb-1 !text-[10px] lg:!text-[11px]">Alamat</p>
+            <p class="m-0 text-[15px] leading-normal lg:text-base">{formatAddress(branch)}</p>
+            {branch.address_incomplete && (
+              <p class="m-0 mt-1 text-[13px] text-ink-muted italic">
+                Alamat lengkap: tanyakan via WhatsApp
+              </p>
+            )}
+          </div>
+        </div>
+        <div class="ci">
+          <span class="text-accent-strong">
+            <Icon name="clock" size={22} strokeWidth={1.5} />
+          </span>
+          <div>
+            <p class="lbl m-0 mb-1 !text-[10px] lg:!text-[11px]">Jam buka</p>
+            <p class="m-0 text-[15px] lg:text-base">
+              Setiap hari {formatHours(branch.open_time, branch.close_time)}
+            </p>
+          </div>
+        </div>
+        <div class="ci">
+          <span class="text-accent-strong">
+            <Icon name="whatsapp" size={22} strokeWidth={1.5} />
+          </span>
+          <div>
+            <p class="lbl m-0 mb-0.5 !text-[10px] lg:mb-1 lg:!text-[11px]">WhatsApp booking</p>
+            <a class="inline-flex min-h-11 items-center text-[15px] font-bold lg:text-base" {...wa}>
+              {phone}
+            </a>
+          </div>
+        </div>
+        <div class="ci">
+          <span class="text-accent-strong">
+            <Icon name="instagram" size={22} strokeWidth={1.5} />
+          </span>
+          <div>
+            <p class="lbl m-0 mb-0.5 !text-[10px] lg:mb-1 lg:!text-[11px]">Instagram</p>
+            <a
+              class="inline-flex min-h-11 items-center text-[15px] font-bold lg:text-base"
+              href={instagram}
+              target="_blank"
+              rel="noopener"
+            >
+              @{instagramHandle}
+            </a>
+          </div>
+        </div>
+        <div class="mt-1 grid gap-2.5 pt-3 lg:mt-auto lg:grid-cols-2">
+          <a class="btn hidden lg:inline-flex" {...wa}>
+            Booking via WA
+          </a>
+          <a class="btn-o" href={mapsUrl} target="_blank" rel="noopener">
+            <span class="lg:hidden">Buka di Google Maps</span>
+            <span class="hidden lg:inline">Petunjuk Arah</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

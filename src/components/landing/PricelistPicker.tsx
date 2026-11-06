@@ -19,7 +19,12 @@ import type {
 export type PickerBranch = Pick<Branch, 'slug' | 'name' | 'whatsapp_number' | 'is_flagship'>;
 export type PickerBarber = Pick<
   Barber,
-  'branch_slug' | 'name' | 'is_generic' | 'haircut_price' | 'haircut_original_price' | 'long_trim_price'
+  | 'branch_slug'
+  | 'name'
+  | 'is_generic'
+  | 'haircut_price'
+  | 'haircut_original_price'
+  | 'long_trim_price'
 >;
 export type PickerService = Pick<
   Service,
@@ -75,13 +80,18 @@ function DesktopTable(props: {
   rows: PickerBarber[];
   branch: PickerBranch;
   settings: WhatsAppSettings;
-  part: number;
+  /** Nomor bagian bila tabel dibagi dua kolom; kosong untuk tabel tunggal. */
+  part?: number;
 }) {
   return (
     <div
       className="card overflow-hidden"
       role="table"
-      aria-label={`Pricelist ${props.branch.name} bagian ${props.part}`}
+      aria-label={
+        props.part === undefined
+          ? `Pricelist ${props.branch.name}`
+          : `Pricelist ${props.branch.name} bagian ${props.part}`
+      }
     >
       <div role="row" className="row !min-h-16 !border-t-0 !bg-surface">
         <span role="columnheader" className="lbl !text-xs">
@@ -105,7 +115,10 @@ function DesktopTable(props: {
       </div>
       {props.rows.map((barber, index) => (
         <div role="row" className="row" key={`${barber.name}-${index}`}>
-          <span role="cell" className="flex items-center gap-2 text-[17px] font-medium whitespace-nowrap">
+          <span
+            role="cell"
+            className="flex items-center gap-2 text-[17px] font-medium whitespace-nowrap"
+          >
             {barber.name}
             {barber.is_generic && (
               <span
@@ -149,7 +162,11 @@ function MobileTable(props: {
   settings: WhatsAppSettings;
 }) {
   return (
-    <div className="card overflow-hidden" role="table" aria-label={`Pricelist ${props.branch.name}`}>
+    <div
+      className="card overflow-hidden"
+      role="table"
+      aria-label={`Pricelist ${props.branch.name}`}
+    >
       <div role="row" className="pr !min-h-[52px] !border-t-0 !bg-surface">
         <span role="columnheader" className="lbl !text-[11px] !tracking-[0.14em]">
           Barber
@@ -169,10 +186,7 @@ function MobileTable(props: {
       </div>
       {props.rows.map((barber, index) => (
         <div role="row" className="pr" key={`${barber.name}-${index}`}>
-          <span
-            role="cell"
-            className="flex min-w-0 items-center gap-1.5 text-base font-medium"
-          >
+          <span role="cell" className="flex min-w-0 items-center gap-1.5 text-base font-medium">
             {barber.name}
             {barber.is_generic && (
               <span title="Dilayani barber yang tersedia" className="text-accent-strong">
@@ -204,6 +218,55 @@ function MobileTable(props: {
         </div>
       ))}
     </div>
+  );
+}
+
+function EmptyPricelist(props: { branch: PickerBranch; settings: WhatsAppSettings }) {
+  const { branch, settings } = props;
+  return (
+    <div className="card flex flex-col items-center gap-3.5 !bg-white px-5 py-8 text-center lg:gap-4 lg:px-10 lg:py-14">
+      <span className="hidden text-accent-strong lg:block">
+        <Icon name="list" size={40} strokeWidth={1.3} />
+      </span>
+      <Badge variant="baru">Segera Hadir</Badge>
+      <h3 className="m-0 font-display text-[21px] font-extrabold lg:text-[26px]">
+        Pricelist cabang ini segera hadir
+      </h3>
+      <p className="body-text max-w-[460px] !text-[15px] lg:!text-[17px]">
+        Kami sedang menyiapkan daftar barber dan harga untuk {branch.name}. Tanyakan harga terbaru
+        langsung ke admin.
+      </p>
+      <a
+        className="btn self-stretch lg:self-center"
+        {...whatsAppLinkProps({ context: 'branch_no_pricelist', settings, branch })}
+      >
+        Tanya Harga via WhatsApp
+      </a>
+    </div>
+  );
+}
+
+/**
+ * Tabel pricelist satu cabang untuk halaman /cabang/[slug] (PRD F-13, mode cabang tunggal).
+ * Tanpa pemilih dan tanpa `client:` di pemanggil, jadi dirender statis, nol JS.
+ */
+export function BranchPricelistTable(props: {
+  branch: PickerBranch;
+  barbers: PickerBarber[];
+  settings: WhatsAppSettings;
+}) {
+  const { branch, settings } = props;
+  const rows = props.barbers.filter((barber) => barber.branch_slug === branch.slug);
+  if (rows.length === 0) return <EmptyPricelist branch={branch} settings={settings} />;
+  return (
+    <>
+      <div className="hidden lg:block">
+        <DesktopTable rows={rows} branch={branch} settings={settings} />
+      </div>
+      <div className="lg:hidden">
+        <MobileTable rows={rows} branch={branch} settings={settings} />
+      </div>
+    </>
   );
 }
 
@@ -264,25 +327,7 @@ export default function PricelistPicker({ branches, barbers, includes, settings 
       </div>
 
       {rows.length === 0 ? (
-        <div className="card flex flex-col items-center gap-3.5 !bg-white px-5 py-8 text-center lg:gap-4 lg:px-10 lg:py-14">
-          <span className="hidden text-accent-strong lg:block">
-            <Icon name="list" size={40} strokeWidth={1.3} />
-          </span>
-          <Badge variant="baru">Segera Hadir</Badge>
-          <h3 className="m-0 font-display text-[21px] font-extrabold lg:text-[26px]">
-            Pricelist cabang ini segera hadir
-          </h3>
-          <p className="body-text max-w-[460px] !text-[15px] lg:!text-[17px]">
-            Kami sedang menyiapkan daftar barber dan harga untuk {branch.name}. Tanyakan harga
-            terbaru langsung ke admin.
-          </p>
-          <a
-            className="btn self-stretch lg:self-center"
-            {...whatsAppLinkProps({ context: 'branch_no_pricelist', settings, branch })}
-          >
-            Tanya Harga via WhatsApp
-          </a>
-        </div>
+        <EmptyPricelist branch={branch} settings={settings} />
       ) : (
         <>
           <div className="mb-4 flex flex-col gap-1.5 rounded-gb border border-line bg-white px-4 py-3.5 lg:mb-5 lg:flex-row lg:flex-wrap lg:items-center lg:gap-4 lg:px-5 lg:py-4">
@@ -365,19 +410,25 @@ function ServicePrice(props: { type: Service['price_type']; min: number; max: nu
   );
 }
 
-interface ServicesProps {
-  branches: PickerBranch[];
-  services: PickerService[];
-  availability: Availability;
-  settings: WhatsAppSettings;
-  /** Judul section (dari SectionHeading.astro), sebaris dengan pemilih cabang di desktop. */
-  children?: ReactNode;
+type StatusOf = Availability[string];
+
+/** Hitung layanan per status untuk satu cabang (layanan 'unavailable' tidak ditampilkan). */
+export function summarizeServices(services: PickerService[], statusOf: StatusOf) {
+  const shown = services.filter((service) => {
+    const entry = statusOf[service.slug];
+    return entry && entry.status !== 'unavailable';
+  });
+  const soon = shown.filter((service) => statusOf[service.slug]!.status === 'soon').length;
+  return { total: services.length, shown: shown.length, soon };
 }
 
-export function ServicesPanel({ branches, services, availability, settings, children }: ServicesProps) {
-  const branch = useActiveBranch(branches);
-  const statusOf = availability[branch.slug] ?? {};
-
+function ServiceGroups(props: {
+  branch: PickerBranch;
+  services: PickerService[];
+  statusOf: StatusOf;
+  settings: WhatsAppSettings;
+}) {
+  const { branch, services, statusOf, settings } = props;
   const groups = GROUPS.map((group) => ({
     ...group,
     items: services
@@ -388,33 +439,6 @@ export function ServicesPanel({ branches, services, availability, settings, chil
 
   return (
     <>
-      <div className="mb-4 flex flex-col gap-4 lg:mb-10 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
-        {children}
-        <div className="hidden min-w-[300px] flex-col gap-1.5 lg:flex">
-          <label htmlFor="layanan-cabang" className="lbl !text-xs">
-            Ketersediaan di cabang
-          </label>
-          <select
-            id="layanan-cabang"
-            className="inp font-bold"
-            value={branch.slug}
-            onChange={(event) => selectBranch(event.target.value)}
-          >
-            {branches.map((option) => (
-              <option value={option.slug} key={option.slug}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p className="m-0 text-sm text-ink-muted lg:hidden">
-          Ketersediaan di cabang <strong className="text-ink">{branch.name}</strong> ·{' '}
-          <a href="#harga" className="inline-flex min-h-11 items-center underline">
-            Ganti cabang
-          </a>
-        </p>
-      </div>
-
       {groups.length === 0 ? (
         <div className="card flex flex-col items-center gap-3.5 !bg-white px-5 py-8 text-center lg:px-10 lg:py-14">
           <h3 className="m-0 font-display text-[21px] font-extrabold lg:text-[26px]">
@@ -470,6 +494,69 @@ export function ServicesPanel({ branches, services, availability, settings, chil
           ))}
         </div>
       )}
+    </>
+  );
+}
+
+/** Kartu layanan satu cabang untuk /cabang/[slug]; dirender statis tanpa hidrasi. */
+export function BranchServicesList(props: {
+  branch: PickerBranch;
+  services: PickerService[];
+  statusOf: StatusOf;
+  settings: WhatsAppSettings;
+}) {
+  return <ServiceGroups {...props} />;
+}
+
+interface ServicesProps {
+  branches: PickerBranch[];
+  services: PickerService[];
+  availability: Availability;
+  settings: WhatsAppSettings;
+  /** Judul section (dari SectionHeading.astro), sebaris dengan pemilih cabang di desktop. */
+  children?: ReactNode;
+}
+
+export function ServicesPanel({
+  branches,
+  services,
+  availability,
+  settings,
+  children,
+}: ServicesProps) {
+  const branch = useActiveBranch(branches);
+  const statusOf = availability[branch.slug] ?? {};
+
+  return (
+    <>
+      <div className="mb-4 flex flex-col gap-4 lg:mb-10 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
+        {children}
+        <div className="hidden min-w-[300px] flex-col gap-1.5 lg:flex">
+          <label htmlFor="layanan-cabang" className="lbl !text-xs">
+            Ketersediaan di cabang
+          </label>
+          <select
+            id="layanan-cabang"
+            className="inp font-bold"
+            value={branch.slug}
+            onChange={(event) => selectBranch(event.target.value)}
+          >
+            {branches.map((option) => (
+              <option value={option.slug} key={option.slug}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <p className="m-0 text-sm text-ink-muted lg:hidden">
+          Ketersediaan di cabang <strong className="text-ink">{branch.name}</strong> ·{' '}
+          <a href="#harga" className="inline-flex min-h-11 items-center underline">
+            Ganti cabang
+          </a>
+        </p>
+      </div>
+
+      <ServiceGroups branch={branch} services={services} statusOf={statusOf} settings={settings} />
       <p className="mt-4 mb-0 hidden text-sm text-ink-muted lg:block">
         Status layanan mengikuti cabang terpilih. <strong className="text-ink">Segera Hadir</strong>{' '}
         = belum tersedia di cabang ini.

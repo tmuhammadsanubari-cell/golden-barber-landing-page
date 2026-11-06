@@ -1,0 +1,106 @@
+---
+// Kebijakan Privasi singkat (PRD NFR-011). Teks perlu ditinjau pemilik sebelum launch.
+import FloatingWhatsApp from '@/components/landing/FloatingWhatsApp.astro';
+import Footer from '@/components/landing/Footer.astro';
+import Navbar from '@/components/landing/Navbar.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getBranches, getSettings } from '@/lib/data';
+import { whatsAppLinkProps } from '@/lib/whatsapp';
+
+const [settings, branches] = await Promise.all([getSettings(), getBranches()]);
+const flagship = branches.find((branch) => branch.is_flagship) ?? branches[0]!;
+const instagram = settings.social_links.instagram;
+const instagramHandle = instagram.replace(/\/$/, '').split('/').pop()!.replace(/^@/, '');
+
+const sections = [
+  {
+    id: 'data',
+    title: 'Data yang kami kumpulkan',
+    body: [
+      'Hanya dari formulir Golden Academy dan Kemitraan: nama, nomor WhatsApp, kota, pesan (jika diisi), serta isian tambahan formulir (usia dan pengalaman untuk Academy; email dan status lokasi untuk Kemitraan).',
+      'Booking haircut tidak memakai formulir. Percakapan terjadi langsung di WhatsApp.',
+    ],
+  },
+  {
+    id: 'penggunaan',
+    title: 'Untuk apa data dipakai',
+    body: [
+      'Data hanya dipakai tim Golden Barber untuk menghubungi kamu terkait Golden Academy atau kemitraan yang kamu minati.',
+    ],
+  },
+  {
+    id: 'ip',
+    title: 'Alamat IP',
+    body: [
+      'Alamat IP tidak disimpan apa adanya. Kami hanya menyimpan hash satu arah (SHA-256 dengan salt) untuk membatasi pengiriman formulir berulang dan mencegah spam.',
+    ],
+  },
+  {
+    id: 'akses',
+    title: 'Siapa yang bisa membaca',
+    body: ['Data formulir hanya bisa dibaca admin Golden Barber yang berwenang lewat panel admin.'],
+  },
+  {
+    id: 'kontak',
+    title: 'Ingin data dihapus atau punya pertanyaan?',
+    body: [
+      'Hubungi kami lewat WhatsApp atau Instagram. Sebutkan nama dan nomor yang kamu isi di formulir.',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Kebijakan Privasi — Golden Barber"
+  description="Data apa yang dikumpulkan formulir Golden Barber, untuk apa dipakai, dan bagaimana alamat IP diperlakukan."
+>
+  <Navbar settings={settings} flagship={flagship} home={false} />
+  <main id="top" class="wrap pt-4 pb-14 lg:pb-24">
+    <nav aria-label="Breadcrumb" class="bc">
+      <ol class="m-0 flex list-none items-center gap-2 p-0 text-sm lg:gap-2.5">
+        <li>
+          <a href="/">Beranda</a>
+        </li>
+        <li aria-hidden="true" class="text-sep">
+          /
+        </li>
+        <li aria-current="page" class="font-bold">
+          Kebijakan Privasi
+        </li>
+      </ol>
+    </nav>
+    <div class="mt-6 max-w-[720px] lg:mt-10">
+      <p class="lbl m-0 mb-3.5">Privasi</p>
+      <h1 class="h2 !text-[34px] lg:!text-[52px]">Kebijakan Privasi</h1>
+      <p class="body-text mt-4">
+        Ringkasan singkat cara Golden Barber memperlakukan data dari formulir di situs ini.
+      </p>
+      {sections.map((section) => (
+        <section aria-labelledby={`${section.id}-h`} class="mt-8 lg:mt-10">
+          <h2
+            id={`${section.id}-h`}
+            class="m-0 mb-3 font-display text-xl font-extrabold lg:text-2xl"
+          >
+            {section.title}
+          </h2>
+          {section.body.map((paragraph) => (
+            <p class="body-text mb-3 last:mb-0">{paragraph}</p>
+          ))}
+        </section>
+      ))}
+      <div class="mt-5 flex flex-col gap-2.5 lg:flex-row">
+        <a class="btn" {...whatsAppLinkProps({ context: 'general', settings })}>
+          Hubungi via WhatsApp
+        </a>
+        <a class="btn-o" href={instagram} target="_blank" rel="noopener">
+          Instagram @{instagramHandle}
+        </a>
+      </div>
+      <p class="mt-10 mb-0 text-sm text-ink-muted">Terakhir diperbarui: 6 November 2026.</p>
+    </div>
+  </main>
+  <Footer settings={settings} branches={branches} />
+  <aside aria-label="Booking cepat">
+    <FloatingWhatsApp settings={settings} />
+  </aside>
+</BaseLayout>

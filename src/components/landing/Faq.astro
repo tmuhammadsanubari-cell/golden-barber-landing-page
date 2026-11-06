@@ -2,6 +2,7 @@
 import Icon from '@/components/ui/Icon';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { formatHours } from '@/lib/format';
+import { buildFaqJsonLd, serializeJsonLd } from '@/lib/seo';
 import { whatsAppLinkProps } from '@/lib/whatsapp';
 import type { Branch, Faq, SiteSettings } from '@/types/content';
 
@@ -14,53 +15,43 @@ interface Props {
 const { items, settings, flagship } = Astro.props;
 const wa = whatsAppLinkProps({ context: 'general', settings });
 
-// JSON-LD FAQPage sesuai FAQ yang tampil (PRD F-12).
-const jsonLd = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: items.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: { '@type': 'Answer', text: item.answer },
-  })),
-}).replace(/</g, '\\u003c');
+// JSON-LD FAQPage sesuai FAQ yang tampil (PRD F-12, F-08).
+const jsonLd = serializeJsonLd(buildFaqJsonLd(items));
 ---
 
 <section id="faq" aria-labelledby="faq-h">
-  <div
-    class="wrap grid items-start gap-4 py-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:pt-24 lg:pb-28"
-  >
+  <div class="wrap grid items-start gap-4 py-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:pt-24 lg:pb-28">
     <div class="flex flex-col gap-4 lg:gap-[18px]">
       <SectionHeading id="faq-h" label="FAQ" tagline="Pertanyaan umum">
-        Masih ada<br class="hidden lg:block" /> pertanyaan?
+        Masih ada
+        <br class="hidden lg:block" /> pertanyaan?
       </SectionHeading>
       <p class="body-text hidden lg:block">
-        Admin kami siap menjawab via WhatsApp setiap hari {
-          formatHours(flagship.open_time, flagship.close_time)
-        }.
+        Admin kami siap menjawab via WhatsApp setiap hari{' '}
+        {formatHours(flagship.open_time, flagship.close_time)}.
       </p>
-      <a class="btn hidden self-start lg:inline-flex" {...wa}>Tanya via WhatsApp</a>
+      <a class="btn hidden self-start lg:inline-flex" {...wa}>
+        Tanya via WhatsApp
+      </a>
     </div>
     <div class="border-b border-line">
-      {
-        items.map((item, index) => (
-          <details class="border-t border-line" open={index === 0}>
-            <summary class="faq-q">
-              <h3 class="m-0 font-[inherit] text-[length:inherit] font-[inherit]">
-                {item.question}
-              </h3>
-              <span class="faq-chev inline-flex flex-none text-accent-strong lg:size-8 lg:items-center lg:justify-center">
-                <Icon name="chevron-down" strokeWidth={1.8} />
-              </span>
-            </summary>
-            <p class="body-text pb-[18px] !text-[15px] lg:pr-12 lg:pb-6 lg:pl-1 lg:!text-base">
-              {item.answer}
-            </p>
-          </details>
-        ))
-      }
+      {items.map((item, index) => (
+        <details class="border-t border-line" open={index === 0}>
+          <summary class="faq-q">
+            <h3 class="m-0 font-[inherit] text-[length:inherit] font-[inherit]">{item.question}</h3>
+            <span class="faq-chev inline-flex flex-none text-accent-strong lg:size-8 lg:items-center lg:justify-center">
+              <Icon name="chevron-down" strokeWidth={1.8} />
+            </span>
+          </summary>
+          <p class="body-text pb-[18px] !text-[15px] lg:pr-12 lg:pb-6 lg:pl-1 lg:!text-base">
+            {item.answer}
+          </p>
+        </details>
+      ))}
     </div>
-    <a class="btn mt-2 lg:hidden" {...wa}>Tanya via WhatsApp</a>
+    <a class="btn mt-2 lg:hidden" {...wa}>
+      Tanya via WhatsApp
+    </a>
   </div>
 </section>
 

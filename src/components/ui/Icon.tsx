@@ -38,6 +38,7 @@ const paths: Record<string, ReactNode> = {
   'chevron-right': <path d="M9 5l7 7-7 7" />,
   'chevron-down': <path d="M6 9l6 6 6-6" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  navigation: <path d="M3.5 11.5 20.5 4l-7.5 17-2-7.5z" />,
   instagram: (
     <>
       <rect x="3.5" y="3.5" width="17" height="17" rx="5" />

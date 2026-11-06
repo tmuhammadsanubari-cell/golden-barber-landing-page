@@ -8,20 +8,23 @@ import type { Branch, SiteSettings } from '@/types/content';
 interface Props {
   settings: SiteSettings;
   flagship: Branch;
+  /** false di halaman selain beranda: tautan section jadi "/#cabang" dst. */
+  home?: boolean;
 }
 
-const { settings, flagship } = Astro.props;
+const { settings, flagship, home = true } = Astro.props;
+const base = home ? '' : '/';
 const wa = whatsAppLinkProps({ context: 'general', settings });
 const instagramHandle = settings.social_links.instagram.match(/instagram\.com\/([^/]+)/)?.[1];
 
 const menu = [
-  { href: '#cabang', label: 'Cabang' },
-  { href: '#harga', label: 'Harga' },
-  { href: '#layanan', label: 'Layanan' },
-  { href: '#galeri', label: 'Galeri' },
-  { href: '#academy', label: 'Academy' },
-  { href: '#kemitraan', label: 'Kemitraan' },
-  { href: '#faq', label: 'FAQ' },
+  { href: `${base}#cabang`, label: 'Cabang' },
+  { href: `${base}#harga`, label: 'Harga' },
+  { href: `${base}#layanan`, label: 'Layanan' },
+  { href: `${base}#galeri`, label: 'Galeri' },
+  { href: `${base}#academy`, label: 'Academy' },
+  { href: `${base}#kemitraan`, label: 'Kemitraan' },
+  { href: `${base}#faq`, label: 'FAQ' },
 ];
 ---
 
@@ -30,7 +33,7 @@ const menu = [
   class="sticky top-0 z-20 border-b border-line bg-[rgba(236,236,236,0.96)] data-[scrolled]:bg-bg"
 >
   <div class="wrap flex h-16 items-center gap-2 !pr-4 !pl-5 lg:h-[76px] lg:justify-between lg:gap-6">
-    <a href="#top" aria-label="Golden Barber Indonesia — beranda" class="mr-auto inline-flex min-h-11 min-w-0 items-center lg:mr-0">
+    <a href={home ? '#top' : '/'} aria-label="Golden Barber Indonesia — beranda" class="mr-auto inline-flex min-h-11 min-w-0 items-center lg:mr-0">
       <Image
         src="/brand/logo-golden-barber.png"
         alt="Golden Barber"
@@ -148,7 +151,10 @@ const menu = [
   });
 
   // Sorot menu sesuai section yang sedang terlihat
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('header nav .nl')];
+  // Hanya tautan ke halaman ini; di halaman lain (mis. /cabang/dago) tidak ada section yang disorot.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('header nav .nl')].filter(
+    (link) => link.pathname === window.location.pathname,
+  );
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {

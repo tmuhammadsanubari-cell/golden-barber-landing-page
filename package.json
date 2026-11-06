@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "typecheck": "astro check",
     "test:e2e": "playwright test",
-    "format": "prettier --write ."
+    "test:db": "vitest run --config vitest.integration.config.ts",
+    "format": "prettier --write .",
+    "seed:build": "tsx scripts/build-seed-sql.ts"
   },
   "type": "module",
   "dependencies": {
@@ -21,6 +23,8 @@
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^8.2.11",
     "@nanostores/react": "^2.0.1",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.0",
     "@tailwindcss/vite": "^4.3.4",
     "astro": "^5.18.2",
     "nanostores": "^1.5.5",
@@ -40,6 +44,8 @@
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
     "sharp": "^0.35.5",
+    "supabase": "^3.0.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.1",
     "vitest": "^5.1.0"
