@@ -1,0 +1,88 @@
+---
+// Riwayat publikasi + rincian perubahan yang belum tayang (PRD F-20). Tujuan tautan
+// "Riwayat publikasi" dan "Lihat perubahan" di PublishBar.
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listPublishHistory, loadPublishStatus } from '@/lib/admin/publish-db';
+import { CONTENT_TABLES, TABLE_LABEL, formatPublishTime } from '@/lib/admin/publish';
+import { getServiceClient } from '@/lib/supabase/service';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const service = getServiceClient();
+const [status, history] = await Promise.all([
+  loadPublishStatus(supabase, service),
+  listPublishHistory(supabase, service),
+]);
+
+const changed = CONTENT_TABLES.filter((table) => status.counts[table] > 0);
+---
+
+<AdminLayout title="Publikasi" crumb="Riwayat publikasi">
+  <div class="page-head">
+    <div>
+      <h1 class="h1">Publikasi</h1>
+      <p class="page-sub">
+        Perubahan data baru tampil di situs publik setelah dipublikasikan. Build memakan waktu
+        sekitar 1–5 menit.
+      </p>
+    </div>
+  </div>
+
+  <section class="card" id="perubahan" aria-labelledby="pending-h" style="padding:16px;margin-bottom:16px">
+    <h2 id="pending-h" class="h3" style="margin-bottom:8px">Perubahan belum tayang</h2>
+    {
+      changed.length === 0 ? (
+        <p style="margin:0;font-size:14px;color:#5b6161">
+          Tidak ada. Semua perubahan yang tercatat sudah tayang.
+        </p>
+      ) : (
+        <ul style="margin:0;padding:0;list-style:none;display:grid;gap:8px" data-pending-list>
+          {changed.map((table) => (
+            <li style="display:flex;justify-content:space-between;gap:12px;font-size:14px">
+              <span>{TABLE_LABEL[table]}</span>
+              <strong>{status.counts[table]} baris</strong>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <p style="margin:12px 0 0;font-size:13px;color:#5b6161">
+      Menghapus data tidak terhitung di sini. Setelah menghapus sesuatu, pakai "Publikasikan ulang"
+      di bilah atas.
+    </p>
+  </section>
+
+  <section class="card" aria-labelledby="hist-h" style="padding:16px">
+    <h2 id="hist-h" class="h3" style="margin-bottom:8px">Riwayat</h2>
+    {
+      history.length === 0 ? (
+        <p style="margin:0;font-size:14px;color:#5b6161" data-history-empty>
+          Belum pernah dipublikasikan.
+        </p>
+      ) : (
+        <ul style="margin:0;padding:0;list-style:none;display:grid;gap:0" data-history-list>
+          {history.map((row) => (
+            <li
+              data-history-row
+              style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;padding:12px 0;border-top:1px solid #e5e7e7;font-size:14px"
+            >
+              <span>
+                <strong>{formatPublishTime(row.created_at)}</strong>
+                {row.triggered_by_name ? ` · ${row.triggered_by_name}` : ''}
+              </span>
+              <span>
+                <span class={`bd ${row.status === 'failed' ? 'b-err' : 'b-ok'}`}>
+                  {row.status === 'failed' ? 'Gagal' : 'Dipicu'}
+                </span>
+                {row.status === 'failed' && row.error_message ? (
+                  <span style="color:#5b6161;margin-left:8px">{row.error_message}</span>
+                ) : null}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</AdminLayout>

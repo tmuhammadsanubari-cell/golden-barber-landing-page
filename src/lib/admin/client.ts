@@ -32,6 +32,10 @@ export async function callApi<T = unknown>(
       window.location.assign(`/admin/login?redirect=${encodeURIComponent(target)}`);
     }
     const json = (await response.json()) as ApiResult<T>;
+    // Perubahan konten sukses → PublishBar menyegarkan status "belum dipublikasikan".
+    if (method !== 'GET' && json.success && !url.startsWith('/api/admin/publish')) {
+      window.dispatchEvent(new CustomEvent('admin:content-changed'));
+    }
     if (!json.success) json.error.details ??= {};
     return json;
   } catch {

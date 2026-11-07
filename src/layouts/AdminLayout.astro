@@ -2,7 +2,10 @@
 // Kerangka panel admin (mockup Admin-Dashboard & Admin-State): sidebar gelap, header,
 // slot konten. `bare` = tanpa sidebar/header (halaman login & reset password).
 import '@/styles/admin.css';
+import PublishBarHost from '@/components/admin/PublishBarHost';
 import ToastHost from '@/components/admin/ToastHost';
+import { loadPublishStatus } from '@/lib/admin/publish-db';
+import { getServiceClient } from '@/lib/supabase/service';
 import Icon from '@/components/ui/Icon';
 
 interface Props {
@@ -17,14 +20,18 @@ interface Props {
 const { title, active, crumb, bare = false } = Astro.props;
 const admin = Astro.locals.admin;
 
-// Lencana jumlah lead baru di menu Leads (RLS: hanya admin yang bisa menghitung).
+// Lencana jumlah lead baru di menu Leads (RLS: hanya admin yang bisa menghitung) dan status
+// PublishBar (F-20), dibaca bersamaan supaya tidak menambah waktu tunggu berurutan.
 let newLeads = 0;
+let publish: Awaited<ReturnType<typeof loadPublishStatus>> | null = null;
 if (!bare && admin) {
-  const { count } = await Astro.locals.supabase
-    .from('leads')
-    .select('id', { count: 'exact', head: true })
-    .eq('status', 'new');
-  newLeads = count ?? 0;
+  const supabase = Astro.locals.supabase;
+  const [leadsRes, status] = await Promise.all([
+    supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+    loadPublishStatus(supabase, getServiceClient()),
+  ]);
+  newLeads = leadsRes.count ?? 0;
+  publish = status;
 }
 
 const nav = [
@@ -176,7 +183,17 @@ const initials = (admin?.full_name ?? '')
               </button>
             </div>
           </header>
-          <slot name="publishbar" />
+          {publish && (
+            <PublishBarHost
+              client:load
+              initial={{
+                has_unpublished_changes: publish.has_unpublished_changes,
+                pending_count: publish.pending_count,
+                last_success_at: publish.last_success_at,
+                cooldown_seconds_left: publish.cooldown_seconds_left,
+              }}
+            />
+          )}
           <main class="page" id="main">
             <slot />
           </main>

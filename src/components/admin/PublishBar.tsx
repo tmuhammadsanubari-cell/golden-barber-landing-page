@@ -1,15 +1,17 @@
-// PublikasiBar 3 state (mockup Admin-State, bagian 1). Presentasional: status dan aksi
-// datang dari pemanggil. Penyambungan ke /api/admin/publish dikerjakan di bagian Publikasi (F-20).
+// PublishBar 3 state (mockup Admin-State, bagian 1). Presentasional: status dan aksi
+// datang dari pemanggil (`PublishBarHost` menyambungkannya ke /api/admin/publish, F-20).
 import Icon from '@/components/ui/Icon';
 
 export type PublishState =
-  | { kind: 'ok'; lastPublished: string | null }
-  | { kind: 'pending'; count: number }
+  | { kind: 'ok'; lastPublished: string | null; cooldown?: number }
+  | { kind: 'pending'; count: number; cooldown?: number }
   | { kind: 'running'; count: number };
 
 interface Props {
   state: PublishState;
   onPublish?: () => void;
+  /** Tautan "Publikasikan ulang" pada state ok (menghapus data tidak tercatat di updated_at). */
+  onRepublish?: () => void;
   historyHref?: string;
   changesHref?: string;
 }
@@ -17,15 +19,19 @@ interface Props {
 export default function PublishBar({
   state,
   onPublish,
+  onRepublish,
   historyHref = '/admin/publikasi',
-  changesHref = '#',
+  changesHref = '/admin/publikasi#perubahan',
 }: Props) {
   if (state.kind === 'running') {
     return (
       <div className="pb pb-run" role="status" aria-live="polite">
         <span className="spin" aria-hidden="true" />
         <span>
-          <strong>Memublikasikan {state.count} perubahan…</strong> Jangan tutup halaman ini.
+          <strong>
+            {state.count > 0 ? `Memublikasikan ${state.count} perubahan…` : 'Memublikasikan…'}
+          </strong>{' '}
+          Jangan tutup halaman ini.
         </span>
         <button type="button" className="btn push" disabled>
           Memproses…
@@ -44,8 +50,13 @@ export default function PublishBar({
         <a href={changesHref} className="push" style={{ color: '#5E4800', fontWeight: 700 }}>
           Lihat perubahan
         </a>
-        <button type="button" className="btn" onClick={onPublish}>
-          Publikasikan
+        <button
+          type="button"
+          className="btn"
+          onClick={onPublish}
+          disabled={(state.cooldown ?? 0) > 0}
+        >
+          {(state.cooldown ?? 0) > 0 ? `Tunggu ${state.cooldown} dtk` : 'Publikasikan'}
         </button>
       </div>
     );
@@ -60,6 +71,16 @@ export default function PublishBar({
       <a href={historyHref} className="push" style={{ color: '#22603B', fontWeight: 700 }}>
         Riwayat publikasi
       </a>
+      {onRepublish ? (
+        <button
+          type="button"
+          className="btn-o btn-sm"
+          onClick={onRepublish}
+          disabled={(state.cooldown ?? 0) > 0}
+        >
+          {(state.cooldown ?? 0) > 0 ? `Tunggu ${state.cooldown} dtk` : 'Publikasikan ulang'}
+        </button>
+      ) : null}
     </div>
   );
 }
