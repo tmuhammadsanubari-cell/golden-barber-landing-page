@@ -4,10 +4,10 @@ Claude Code: baca file ini di awal sesi, update di akhir setiap tugas.
 
 ## Posisi sekarang
 
-- **Milestone aktif:** M3 Panel Admin (jalan). Branch `m3-admin`, commit terakhir sudah di-push ke GitHub. **Belum di-merge ke `main` dan belum ada PR.** `main` sudah memuat M1 dan M2.
+- **Milestone aktif:** M3 Panel Admin (jalan). Branch `m3-admin`, working tree bersih. **4 commit terakhir BELUM di-push ke GitHub** (`b1d3b88` Cabang, `ae38203` Barber & Harga, `e672a6a` catatan, `ab979a7` Layanan); push saat user minta (`git push origin m3-admin`). **Belum di-merge ke `main` dan belum ada PR.** `main` sudah memuat M1 dan M2.
 - **Tugas berikutnya:** M3 bagian 4 → Publikasi (F-20): `GET /api/admin/publish/status`, `POST /api/admin/publish`, `PublishBar` tersambung, banner di Dashboard. Lalu bagian 5. Bagian 3 (konten inti) sudah selesai. Detail di `docs/milestones/M3.md`.
 - **Blocker:** tidak ada.
-- **Jangan merge `m3-admin` ke `main` sebelum M3 selesai.** Panel admin masih sebagian; menu samping memuat tautan ke halaman yang belum ada (Cabang, Barber, Layanan, Galeri, Testimoni, FAQ, Pengaturan, Pengguna) dan akan 404.
+- **Jangan merge `m3-admin` ke `main` sebelum M3 selesai.** Panel admin masih sebagian; menu samping masih memuat tautan ke halaman yang belum ada (Galeri, Testimoni, FAQ, Pengaturan, Pengguna) dan akan 404 sampai bagian 5 selesai.
 
 ### Sisa M3 (urut kerja)
 
@@ -19,6 +19,18 @@ Claude Code: baca file ini di awal sesi, update di akhir setiap tugas.
 ### Sudah selesai di M3 (per 2026-11-06)
 
 Fondasi (middleware, auth, layout, login/reset), `POST /api/leads` + `LeadForm`, halaman Leads (F-19), Dashboard (F-15), Cabang (F-16), Barber & Harga (F-17), Layanan (F-18). Rincian di Log di bawah.
+
+### Mulai sesi berikutnya (urutan disarankan)
+
+1. Baca file ini, lalu `docs/milestones/M3.md`. Cek `git status` (harus bersih) dan `git log --oneline -5` (puncaknya `ab979a7`).
+2. Baseline cepat sebelum menulis kode: `npm run typecheck`, `npm run lint`, `npm test` (174 lolos). Uji yang butuh `.env` (`test:db`, e2e admin) dijalankan setelah `set -a; . ./.env; set +a`.
+3. Kerjakan **bagian 4: Publikasi (F-20)**. Baca PRD F-20 dan bagian 4.3 (API) dulu. Yang sudah ada: `src/components/admin/PublishBar.tsx` (baru tampilan, 3 state) dan slot `publishbar` di `AdminLayout.astro`; tabel `publish_logs` dan RLS-nya sudah ada (insert lewat service role). Yang belum: endpoint status/publish, kunci 60 detik, banner "belum dipublikasikan" di Dashboard (F-15 poin 3), PublishBar di setiap layar. Ide untuk status "ada perubahan belum dipublikasikan" (belum diputuskan, tulis di DECISIONS bila dipakai): bandingkan `max(updated_at)` tabel konten (branches, barbers, services, branch_services, gallery_items, testimonials, faqs, site_settings) dengan `created_at` publish terakhir yang berstatus `triggered`.
+4. **Pertanyaan terbuka untuk user:** nilai `VERCEL_DEPLOY_HOOK_URL` (dan `VERCEL_API_TOKEN` bila dipakai) belum ada di `.env` lokal. Tanpa itu, picu sungguhan tidak bisa diuji dari sesi Claude; bangun dulu dengan hook palsu/dapat diganti di tes, dan jangan memicu deploy produksi tanpa izin user.
+5. Setelah bagian 4: bagian 5 (Galeri + upload, Testimoni, FAQ, Pengaturan, Pengguna), lalu Definition of Done M3 (alur login → ubah harga Aditia → Publikasikan → tayang ≤ 5 menit; Editor 403 di `/admin/pengguna`; `/cek-prd` untuk F-14 s/d F-22).
+
+**Pola kerja per fitur yang terbukti** (ikuti agar konsisten): baca PRD + mockup (ekstrak dari bundle, lihat jebakan di bawah) → fungsi murni + skema Zod + unit test → lapisan `*-db.ts` + endpoint API + tes DB dengan sesi admin sungguhan → island React + halaman `.astro` + CSS di `admin.css` → e2e desktop & mobile → bandingkan screenshot dengan mockup di 1440 & 390 → catat D-xx di DECISIONS, centang M3, tulis Log → commit kecil. Tombol/saklar admin harus ≥ 44px; teks UI Bahasa Indonesia; harga lewat `parsePriceCell`/`formatPriceShort`.
+
+**Keadaan kode per 2026-11-07:** typecheck/lint bersih; unit 174, `test:db` 50, e2e penuh 191 lolos + 15 skip. Database produksi utuh (11 cabang, 65 barber, 14 layanan, 154 ketersediaan, tanpa sisa data uji). Halaman admin yang jadi: login/reset, Dashboard, Leads, Cabang, Barber & Harga, Layanan.
 
 ### Catatan serah-terima sesi
 
