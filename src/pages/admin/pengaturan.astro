@@ -1,0 +1,29 @@
+---
+// Pengaturan Situs (PRD F-21, mockup Admin-Pengaturan). Isi halaman = island React `SettingsForm`.
+import SettingsForm, { type SettingsValues } from '@/components/admin/SettingsForm';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listSettings } from '@/lib/admin/settings-db';
+import { EDITABLE_KEYS } from '@/lib/validation/admin-settings';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const [settings, branches] = await Promise.all([
+  listSettings(supabase),
+  supabase.from('branches').select('name').order('sort_order').order('name'),
+]);
+if (branches.error) throw branches.error;
+
+const missing = EDITABLE_KEYS.filter((key) => settings[key] === undefined);
+if (missing.length > 0) {
+  throw new Error(`site_settings belum lengkap: ${missing.join(', ')}. Jalankan seed.`);
+}
+---
+
+<AdminLayout title="Pengaturan" active="pengaturan" crumb="Pengaturan Situs">
+  <SettingsForm
+    client:load
+    initial={settings as unknown as SettingsValues}
+    branchNames={(branches.data ?? []).map((branch) => branch.name)}
+  />
+</AdminLayout>

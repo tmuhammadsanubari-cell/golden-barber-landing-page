@@ -10,6 +10,8 @@ export default defineConfig({
   timeout: 45_000,
   expect: { timeout: 10_000 },
   use: { baseURL },
+  // Membuka semua halaman sekali agar dev server tidak memuat ulang halaman di tengah tes.
+  globalSetup: './tests/e2e/global-setup.ts',
   webServer: {
     command: `npm run dev -- --port ${port}`,
     url: baseURL,

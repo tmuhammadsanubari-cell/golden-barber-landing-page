@@ -464,7 +464,9 @@ test.describe.serial('layanan: matriks (ubah data)', () => {
           .from('branch_services')
           .select('status')
           .eq('service_id', id);
-        return data!.every((r) => r.status === 'soon') && data!.length === branches.length;
+        // Spec Cabang membuat/menghapus cabang uji bersamaan: bandingkan dengan jumlah cabang saat ini.
+        const { count } = await service.from('branches').select('id', { count: 'exact', head: true });
+        return data!.every((r) => r.status === 'soon') && data!.length === count;
       })
       .toBe(true);
     expect((await cellRow(branch.id, id))!.price_override_min).toBe(88000);

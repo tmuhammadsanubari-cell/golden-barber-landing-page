@@ -93,6 +93,8 @@ test.describe('login sungguhan', () => {
     await page.getByRole('button', { name: 'Masuk', exact: true }).click();
     await expect(page).toHaveURL(/\/admin$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
+    // Penangan Keluar dipasang skrip halaman; di mesin yang sibuk URL sudah berganti sebelum skripnya jalan.
+    await page.waitForLoadState('load');
 
     await page.getByRole('button', { name: /Keluar/ }).click();
     await expect(page).toHaveURL(/\/admin\/login$/);

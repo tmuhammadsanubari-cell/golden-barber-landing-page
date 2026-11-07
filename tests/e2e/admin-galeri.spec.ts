@@ -137,10 +137,13 @@ test.describe.serial('Galeri: unggah dan kelola (desktop)', () => {
     await expect(card(page, a.id).getByText('Alt text belum diisi')).toBeVisible();
     await expect(card(page, a.id).getByText('Disembunyikan')).toBeVisible();
     // Gambar termuat dari URL publik storage.
-    const loaded = await card(page, a.id)
-      .locator('img')
-      .evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0);
-    expect(loaded).toBe(true);
+    await expect
+      .poll(() =>
+        card(page, a.id)
+          .locator('img')
+          .evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0),
+      )
+      .toBe(true);
   });
 
   test('file > 3 MB dan format GIF ditolak sebelum dikirim, dengan pesan jelas', async ({ page }) => {
