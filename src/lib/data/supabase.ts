@@ -1,5 +1,6 @@
 // Sumber data Supabase. Bentuk keluaran sama dengan json.ts (slug, bukan id).
 // Dipanggil saat build dengan kunci anon, jadi RLS hanya meloloskan baris aktif.
+import { mediaUrl } from '@/lib/media';
 import { getBuildClient } from '@/lib/supabase/build';
 import type { Database } from '@/types/database';
 import type {
@@ -64,6 +65,8 @@ async function getBranches(): Promise<Branch[]> {
     ...row,
     open_time: hhmm(row.open_time),
     close_time: hhmm(row.close_time),
+    // Foto unggahan admin disimpan sebagai path bucket; aset situs dibiarkan.
+    photo_path: row.photo_path ? mediaUrl(row.photo_path) : row.photo_path,
   }));
 }
 
@@ -124,9 +127,11 @@ export const supabaseSource: DataSource = {
     const byKey = new Map(rows.map((row) => [row.key, row.value]));
     const missing = SETTING_KEYS.filter((key) => !byKey.has(key));
     if (missing.length > 0) fail('site_settings', `key belum ada: ${missing.join(', ')}`);
-    return Object.fromEntries(
+    const settings = Object.fromEntries(
       SETTING_KEYS.map((key) => [key, byKey.get(key)]),
     ) as unknown as SiteSettings;
+    settings.hero = { ...settings.hero, image_path: mediaUrl(settings.hero.image_path) };
+    return settings;
   },
 
   async getFaqs() {
@@ -140,7 +145,9 @@ export const supabaseSource: DataSource = {
       'gallery_items',
       'title, description, image_path, alt_text, is_placeholder, is_active, sort_order',
     );
-    return activeSorted(rows).slice(0, GALLERY_LIMIT);
+    return activeSorted(rows)
+      .slice(0, GALLERY_LIMIT)
+      .map((row) => ({ ...row, image_path: mediaUrl(row.image_path) }));
   },
 
   async getTestimonials() {

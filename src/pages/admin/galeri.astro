@@ -1,0 +1,15 @@
+---
+// Galeri (PRD F-21, mockup Admin-Galeri). Isi halaman adalah island React `GalleryManager`.
+import GalleryManager from '@/components/admin/GalleryManager';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listGallery } from '@/lib/admin/gallery-db';
+import { GALLERY_LIMIT } from '@/lib/data/common';
+
+export const prerender = false;
+
+const items = await listGallery(Astro.locals.supabase);
+---
+
+<AdminLayout title="Galeri" active="galeri">
+  <GalleryManager client:load initial={items} siteLimit={GALLERY_LIMIT} />
+</AdminLayout>
