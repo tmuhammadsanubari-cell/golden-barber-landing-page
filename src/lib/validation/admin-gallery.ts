@@ -7,6 +7,7 @@ import {
   isSitePath,
   isStoragePath,
 } from '@/lib/media';
+import { reorderSchema } from './admin-order';
 
 export const GALLERY_MESSAGES = {
   altRequired: 'Alt text wajib diisi sebelum gambar ditampilkan di situs.',
@@ -82,19 +83,7 @@ export const galleryPatchSchema = z
 
 export type GalleryPatch = z.output<typeof galleryPatchSchema>;
 
-export const galleryReorderSchema = z
-  .array(
-    z.object({
-      id: z.uuid({ error: 'ID tidak valid.' }),
-      sort_order: z.number({ error: 'Urutan harus berupa angka.' }).int().min(0).max(100_000),
-    }),
-    { error: 'Daftar urutan tidak valid.' },
-  )
-  .min(1, 'Daftar urutan kosong.')
-  .max(200, 'Terlalu banyak item.')
-  .refine((items) => new Set(items.map((item) => item.id)).size === items.length, {
-    error: 'ID tidak boleh dobel.',
-  });
+export const galleryReorderSchema = reorderSchema;
 
 /** POST /api/admin/uploads (PRD 4.3): minta URL unggah bertanda tangan. */
 export const uploadRequestSchema = z.object({

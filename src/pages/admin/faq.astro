@@ -1,0 +1,14 @@
+---
+// FAQ (PRD F-21; tanpa mockup, pola daftar Galeri/Testimoni). Isi halaman = island React.
+import FaqManager from '@/components/admin/FaqManager';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listFaqs } from '@/lib/admin/faqs-db';
+
+export const prerender = false;
+
+const items = await listFaqs(Astro.locals.supabase);
+---
+
+<AdminLayout title="FAQ" active="faq">
+  <FaqManager client:load initial={items} />
+</AdminLayout>

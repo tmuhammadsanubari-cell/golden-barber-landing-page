@@ -1,0 +1,25 @@
+---
+// Testimoni (PRD F-21; tanpa mockup, pola daftar Galeri/Layanan). Isi halaman = island React.
+import TestimonialManager from '@/components/admin/TestimonialManager';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listTestimonials } from '@/lib/admin/testimonials-db';
+import { TESTIMONIAL_LIMIT } from '@/lib/data/common';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const [items, branches] = await Promise.all([
+  listTestimonials(supabase),
+  supabase.from('branches').select('id, name').order('sort_order').order('name'),
+]);
+if (branches.error) throw branches.error;
+---
+
+<AdminLayout title="Testimoni" active="testimoni">
+  <TestimonialManager
+    client:load
+    initial={items}
+    branches={branches.data ?? []}
+    siteLimit={TESTIMONIAL_LIMIT}
+  />
+</AdminLayout>

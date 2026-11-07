@@ -2144,3 +2144,106 @@ select.inp {
     display: none;
   }
 }
+
+/* ---------- Daftar konten: Testimoni & FAQ (F-21) ---------- */
+.crud-list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.crud-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 6px 14px;
+  align-items: start;
+  padding: 14px 16px 14px 8px;
+}
+.crud-row.off .crud-main {
+  opacity: 0.6;
+}
+.crud-row.dragging {
+  opacity: 0.45;
+}
+.crud-row.drop-target {
+  box-shadow: 0 0 0 2px var(--a-accent);
+}
+.crud-grip {
+  margin-top: -2px;
+}
+.crud-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.crud-main p {
+  margin: 0;
+}
+.crud-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.crud-sub {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.crud-stars {
+  color: #b8860b;
+  letter-spacing: 0.08em;
+}
+.crud-meta {
+  font-size: 13px;
+  color: var(--a-muted);
+}
+.crud-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #3d4242;
+  overflow-wrap: anywhere;
+}
+.crud-tag {
+  margin-left: 0;
+}
+.crud-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.crud-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.crud-actions {
+  display: flex;
+}
+.crud-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 767px) {
+  .crud-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .crud-side {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .crud-two {
+    grid-template-columns: 1fr;
+  }
+}
