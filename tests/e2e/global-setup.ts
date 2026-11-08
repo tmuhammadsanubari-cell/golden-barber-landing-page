@@ -19,6 +19,7 @@ const ADMIN_PAGES = [
   '/admin/faq',
   '/admin/pengaturan',
   '/admin/publikasi',
+  '/admin/pengguna',
 ];
 
 export default async function globalSetup(config: FullConfig) {

@@ -2566,3 +2566,59 @@ select.inp {
     flex: 1;
   }
 }
+
+/* ---------- Pengguna admin (F-22) ---------- */
+.usr-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 14px 16px;
+}
+.usr-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.usr-avatar {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 20px;
+  background: var(--a-ink);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+}
+.usr-row.off .usr-avatar {
+  background: #8a9090;
+}
+.usr-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.usr-side .sel {
+  width: 160px;
+}
+.usr-row select:disabled,
+.usr-row .sw:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+@media (max-width: 767px) {
+  .usr-row {
+    grid-template-columns: 1fr;
+  }
+  .usr-side {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .usr-side .sel {
+    width: 100%;
+    min-width: 150px;
+  }
+}

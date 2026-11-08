@@ -14,6 +14,13 @@ const SESSION_AUTH_ENDPOINTS = new Set(['/api/auth/me', '/api/auth/logout']);
 
 const UNSAFE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
+/** Halaman dan API yang hanya boleh dibuka Super Admin (PRD 4.4, F-22). */
+const isSuperAdminOnly = (path: string) =>
+  path === '/admin/pengguna' ||
+  path.startsWith('/admin/pengguna/') ||
+  path === '/api/admin/users' ||
+  path.startsWith('/api/admin/users/');
+
 const trimSlash = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path);
 
 /** Origin permintaan harus sama dengan situs ini atau PUBLIC_SITE_URL (perlindungan CSRF). */
@@ -101,6 +108,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
     const target = `${context.url.pathname}${context.url.search}`;
     return context.redirect(`/admin/login?redirect=${encodeURIComponent(target)}`);
+  }
+
+  if (isSuperAdminOnly(path) && context.locals.admin?.role !== 'super_admin') {
+    return isApi ? fail('FORBIDDEN') : forbiddenPage();
   }
 
   const response = await next();
