@@ -95,6 +95,27 @@ test.describe('Pengaturan: tampilan dan isian (tanpa menyimpan)', () => {
     await expect(page.locator('#s-lt')).toHaveValue((originalSocial!.value as Record<string, string>).linktree);
   });
 
+  test('pratinjau teks hero tampil sebelum disimpan dan ikut berubah saat mengetik (PRD F-21)', async ({ page }) => {
+    const preview = page.locator('[data-hero-preview]');
+    await expect(preview).toBeVisible();
+    const hero = (await setting('hero')).value as { title: string; subtitle: string };
+    await expect(preview.locator('[data-hero-preview-title]')).toContainText('Choose Your Haircut.');
+    await expect(preview.locator('[data-hero-preview-accent]')).toHaveText("The Winner's Cut.");
+    await expect(preview).toContainText(hero.subtitle);
+
+    await page.locator('#s-judul').fill('Potong Rapi. Pulang Percaya Diri.');
+    await page.locator('#s-sub').fill('Subjudul percobaan untuk pratinjau.');
+    await expect(preview.locator('[data-hero-preview-accent]')).toHaveText('Pulang Percaya Diri.');
+    await expect(preview).toContainText('Subjudul percobaan untuk pratinjau.');
+    // Satu kalimat: tidak ada bagian aksen.
+    await page.locator('#s-judul').fill('Judul satu kalimat saja');
+    await expect(preview.locator('[data-hero-preview-accent]')).toHaveCount(0);
+    // Belum tersimpan: database tidak berubah sampai "Simpan Draf".
+    expect(((await setting('hero')).value as { title: string }).title).toBe(hero.title);
+    await cancel(page).click();
+    await expect(preview.locator('[data-hero-preview-accent]')).toHaveText("The Winner's Cut.");
+  });
+
   test('rating: 4,55 dan 6 ditolak, 4,8 diterima', async ({ page }) => {
     await page.locator('#s-rv').fill('4,55');
     await expect(page.getByText('Nilai rating maksimal satu angka desimal.')).toBeVisible();

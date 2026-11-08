@@ -16,6 +16,7 @@ import {
   previewTemplate,
   ratingToField,
   sameValue,
+  splitHeroTitle,
 } from '@/lib/admin/settings';
 import { showToast } from '@/lib/admin/toast';
 import { uploadImage } from '@/lib/admin/upload-client';
@@ -379,6 +380,19 @@ export default function SettingsForm({ initial, branchNames }: Props) {
               'hero.subtitle',
               `${draft.hero.subtitle.length}/160 karakter`,
             )}
+            <div className="st-hero-prev" data-hero-preview aria-label="Pratinjau teks hero">
+              <span className="lbl st-prev-lbl">Pratinjau</span>
+              <p className="st-hero-prev-title" data-hero-preview-title>
+                {splitHeroTitle(draft.hero.title).start}
+                {splitHeroTitle(draft.hero.title).end && (
+                  <>
+                    <br />
+                    <span data-hero-preview-accent>{splitHeroTitle(draft.hero.title).end}</span>
+                  </>
+                )}
+              </p>
+              <p className="st-hero-prev-sub">{draft.hero.subtitle}</p>
+            </div>
             <div>
               <span className="fl">Gambar hero</span>
               <div className="st-hero-img">

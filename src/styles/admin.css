@@ -2622,3 +2622,30 @@ select.inp {
     min-width: 150px;
   }
 }
+
+.st-hero-prev {
+  padding: 14px 16px;
+  border-radius: 5px;
+  background: #f4f7f5;
+  border: 1px solid #dce8e0;
+}
+.st-hero-prev-title {
+  margin: 0 0 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--a-ink);
+  overflow-wrap: anywhere;
+}
+.st-hero-prev-title span {
+  color: var(--a-accent);
+}
+.st-hero-prev-sub {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #3d4242;
+  overflow-wrap: anywhere;
+}

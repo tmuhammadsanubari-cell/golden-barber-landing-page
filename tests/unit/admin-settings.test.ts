@@ -8,6 +8,7 @@ import {
   previewTemplate,
   ratingToField,
   sameValue,
+  splitHeroTitle,
 } from '@/lib/admin/settings';
 import { buildWhatsAppMessage } from '@/lib/whatsapp';
 import { getSettings } from '@/lib/data';
@@ -209,6 +210,15 @@ describe('helper form', () => {
     expect(parseCount('3.340')).toBe(3340);
     expect(parseCount('3340')).toBe(3340);
     expect(parseCount('3,5')).toBeNaN();
+  });
+  it('splitHeroTitle: kalimat kedua jadi aksen; satu kalimat tanpa aksen', () => {
+    expect(splitHeroTitle("Choose Your Haircut. The Winner's Cut.")).toEqual({
+      start: 'Choose Your Haircut.',
+      end: "The Winner's Cut.",
+    });
+    expect(splitHeroTitle('Satu kalimat saja')).toEqual({ start: 'Satu kalimat saja', end: '' });
+    expect(splitHeroTitle('A. B. C.')).toEqual({ start: 'A.', end: 'B. C.' });
+    expect(splitHeroTitle('  Berakhir titik.  ')).toEqual({ start: 'Berakhir titik.', end: '' });
   });
   it('sameValue membandingkan isi, bukan referensi', () => {
     expect(sameValue({ a: [1, 2] }, { a: [1, 2] })).toBe(true);

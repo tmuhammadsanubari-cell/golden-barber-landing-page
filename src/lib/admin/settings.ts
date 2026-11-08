@@ -78,6 +78,17 @@ export function parseCount(text: string): number {
   return /^\d+$/.test(digits) ? Number(digits) : Number.NaN;
 }
 
+/**
+ * Judul hero: "Choose Your Haircut. The Winner's Cut." → kalimat pertama biasa, kalimat kedua
+ * berwarna aksen. Tanpa ". " (satu kalimat) seluruh judul biasa, tanpa bagian aksen.
+ */
+export function splitHeroTitle(title: string): { start: string; end: string } {
+  const clean = title.trim();
+  const at = clean.indexOf('. ');
+  if (at === -1) return { start: clean, end: '' };
+  return { start: clean.slice(0, at + 1), end: clean.slice(at + 1).trim() };
+}
+
 /** Perbandingan nilai JSON (untuk "ada perubahan?"). */
 export function sameValue(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) === JSON.stringify(b);

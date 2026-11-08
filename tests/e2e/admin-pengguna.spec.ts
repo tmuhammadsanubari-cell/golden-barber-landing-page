@@ -51,6 +51,54 @@ test.afterAll(async () => {
 });
 
 // ---------------------------------------------------------------------------------------------
+// Login oleh akun yang bukan admin aktif (PRD F-14): 403 dan sesi dihapus
+// ---------------------------------------------------------------------------------------------
+
+test.describe('Login akun yang bukan admin aktif ditolak (F-14)', () => {
+  test('akun tanpa baris admin_profiles → 403, tanpa sesi tersisa', async ({ page }) => {
+    const address = editorEmail(`tanpa-profil-${project()}`);
+    const { data, error } = await service.auth.admin.createUser({
+      email: address,
+      password: EDITOR_PASSWORD,
+      email_confirm: true,
+    });
+    if (error) throw error;
+    createdIds.push(data.user.id);
+
+    const res = await page.request.post('/api/auth/login', {
+      data: { email: address, password: EDITOR_PASSWORD, remember: true },
+      headers: { Origin: ORIGIN },
+    });
+    expect(res.status()).toBe(403);
+    expect((await res.json()).error.code).toBe('FORBIDDEN');
+    // Sesinya sudah dihapus: tidak ada akses ke API admin maupun halaman admin.
+    expect((await page.request.get('/api/admin/branches')).status()).toBe(401);
+    await page.goto('/admin');
+    await expect(page).toHaveURL(/\/admin\/login/);
+  });
+
+  test('akun admin nonaktif → 403 saat login, tanpa sesi tersisa', async ({ page }) => {
+    const address = editorEmail(`nonaktif-${project()}`);
+    const id = await createEditor(address, `UJI-E2E Nonaktif ${project()}`);
+    await service.from('admin_profiles').update({ is_active: false }).eq('id', id);
+
+    const res = await page.request.post('/api/auth/login', {
+      data: { email: address, password: EDITOR_PASSWORD, remember: true },
+      headers: { Origin: ORIGIN },
+    });
+    expect(res.status()).toBe(403);
+    expect((await page.request.get('/api/admin/branches')).status()).toBe(401);
+    // Password salah tetap pesan generik yang sama untuk semua penyebab.
+    const wrong = await page.request.post('/api/auth/login', {
+      data: { email: address, password: 'salah-total-123' },
+      headers: { Origin: ORIGIN },
+    });
+    expect(wrong.status()).toBe(401);
+    expect((await wrong.json()).error.message).toBe('Email atau password salah.');
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
 // Editor tidak punya akses (DoD M3)
 // ---------------------------------------------------------------------------------------------
 
