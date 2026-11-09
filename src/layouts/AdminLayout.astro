@@ -225,7 +225,11 @@ const initials = (admin?.full_name ?? '')
       // Keluar: POST /api/auth/logout lalu ke halaman login.
       document.getElementById('logout-btn')?.addEventListener('click', async () => {
         try {
-          const response = await fetch('/api/auth/logout', { method: 'POST' });
+          // Content-Type wajib walau tanpa body: tanpa itu checkOrigin Astro menolak di Vercel (D-37).
+          const response = await fetch('/api/auth/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          });
           const body = (await response.json()) as { data?: { redirect?: string } };
           window.location.assign(body.data?.redirect ?? '/admin/login');
         } catch {

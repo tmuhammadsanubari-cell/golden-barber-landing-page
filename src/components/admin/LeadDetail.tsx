@@ -34,7 +34,8 @@ type ApiResult = { success: true; data: unknown } | { success: false; error: { m
 async function api(method: 'PATCH' | 'DELETE', id: string, body?: unknown): Promise<ApiResult> {
   const response = await fetch(`/api/admin/leads/${id}`, {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    // Selalu ada, juga untuk DELETE tanpa body (lihat MUTATION_HEADERS di lib/admin/client.ts).
+    headers: { 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
   });
   return (await response.json()) as ApiResult;
