@@ -1,0 +1,19 @@
+---
+// Pengguna admin (PRD F-22). Hanya Super Admin (middleware memberi 403 untuk Editor; dicek ulang
+// di sini). Isi halaman = island React `UsersManager`.
+import UsersManager from '@/components/admin/UsersManager';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listAdminUsers } from '@/lib/admin/users-db';
+
+export const prerender = false;
+
+const admin = Astro.locals.admin;
+if (admin?.role !== 'super_admin') {
+  return new Response('Akses ditolak', { status: 403 });
+}
+const users = await listAdminUsers(Astro.locals.supabase);
+---
+
+<AdminLayout title="Pengguna" active="pengguna" crumb="Pengguna Admin">
+  <UsersManager client:load initial={users} currentUserId={admin.id} />
+</AdminLayout>

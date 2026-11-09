@@ -44,12 +44,16 @@ function RadioGroup(props: {
 export default function LeadForm({ type, settings }: Props) {
   const [errors, setErrors] = useState<Errors>({});
   const [submittedName, setSubmittedName] = useState<string | null>(null);
+  const [pendingName, setPendingName] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const isAcademy = type === 'academy';
   const id = (field: string) => `${type}-${field}`;
 
-  function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const result = leadSchema.safeParse({
       ...Object.fromEntries(form),
       type,
@@ -59,14 +63,41 @@ export default function LeadForm({ type, settings }: Props) {
       const details = zodToDetails(result.error);
       setErrors(details);
       const first = Object.keys(details)[0];
-      event.currentTarget
-        .querySelector<HTMLElement>(`[name="${first}"]`)
-        ?.focus({ preventScroll: false });
+      formElement.querySelector<HTMLElement>(`[name="${first}"]`)?.focus({ preventScroll: false });
       return;
     }
     setErrors({});
-    // M1: belum ada database (PRD F-06). M3 mengganti langkah ini dengan POST ke /api/leads.
-    setSubmittedName(result.data.full_name);
+    setFormError(null);
+    setPendingName(result.data.full_name);
+    setBusy(true);
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...result.data,
+          website: form.get('website') ?? '',
+          source_path: window.location.pathname,
+        }),
+      });
+      const body = (await response.json()) as
+        | { success: true }
+        | {
+            success: false;
+            error: { code: string; message: string; details: Record<string, string> };
+          };
+      if (body.success) {
+        setSubmittedName(result.data.full_name);
+      } else if (body.error.code === 'VALIDATION_ERROR') {
+        setErrors(body.error.details);
+      } else {
+        setFormError(body.error.message);
+      }
+    } catch {
+      setFormError('Koneksi bermasalah. Coba lagi atau hubungi kami via WhatsApp.');
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (submittedName) {
@@ -240,7 +271,9 @@ export default function LeadForm({ type, settings }: Props) {
         label="Pesan"
         maxLength={1000}
         placeholder={
-          isAcademy ? 'Ceritakan tujuan kamu ikut Academy' : 'Ceritakan rencana dan latar belakang Anda'
+          isAcademy
+            ? 'Ceritakan tujuan kamu ikut Academy'
+            : 'Ceritakan rencana dan latar belakang Anda'
         }
         error={errors.message}
       />
@@ -261,8 +294,22 @@ export default function LeadForm({ type, settings }: Props) {
         {errors.consent && <p className="err">{errors.consent}</p>}
       </div>
 
-      <button type="submit" className={`${isAcademy ? 'btn' : 'btn-w'} btn-l`}>
-        {isAcademy ? 'Kirim Minat' : 'Kirim Minat Kemitraan'}
+      {formError && (
+        <div role="alert" className="flex flex-col gap-3">
+          <p className="err !m-0">{formError}</p>
+          {pendingName && (
+            <a
+              className={isAcademy ? 'btn-o' : 'btn-w'}
+              {...whatsAppLinkProps({ context: type, settings, name: pendingName })}
+            >
+              Hubungi via WhatsApp
+            </a>
+          )}
+        </div>
+      )}
+
+      <button type="submit" className={`${isAcademy ? 'btn' : 'btn-w'} btn-l`} disabled={busy}>
+        {busy ? 'Mengirim…' : isAcademy ? 'Kirim Minat' : 'Kirim Minat Kemitraan'}
       </button>
     </form>
   );

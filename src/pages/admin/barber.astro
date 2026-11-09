@@ -1,0 +1,54 @@
+---
+// Barber & Harga (PRD F-17, mockup Admin-Barber desktop & mobile). Cabang dipilih lewat
+// ?cabang=slug (default: cabang pusat). Seluruh isi halaman adalah island BarberManager.
+import BarberManager from '@/components/admin/BarberManager';
+import Icon from '@/components/ui/Icon';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listBarbers } from '@/lib/admin/barbers-db';
+import { listBranchItems } from '@/lib/admin/branches-db';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const branches = await listBranchItems(supabase);
+
+// Slug tidak dikenal jatuh ke cabang pusat (atau cabang pertama), bukan error.
+const slug = Astro.url.searchParams.get('cabang');
+const current =
+  branches.find((branch) => branch.slug === slug) ??
+  branches.find((branch) => branch.is_flagship) ??
+  branches[0] ??
+  null;
+
+const items = current ? await listBarbers(supabase, current.id) : [];
+---
+
+<AdminLayout title="Barber & Harga" active="barber">
+  {current ? (
+    <BarberManager
+      client:load
+      branches={branches.map((branch) => ({
+        id: branch.id,
+        slug: branch.slug,
+        name: branch.name,
+        is_flagship: branch.is_flagship,
+        barbers: branch.barbers,
+      }))}
+      branchId={current.id}
+      items={items}
+    />
+  ) : (
+    <div class="card empty-state">
+      <span aria-hidden="true" class="empty-icon">
+        <Icon name="pin" size={26} />
+      </span>
+      <p class="h3">Belum ada cabang</p>
+      <p class="muted" style="margin:0;max-width:380px;line-height:1.55;font-size:14px">
+        Tambahkan cabang dulu, baru barber dan harganya bisa diatur.
+      </p>
+      <a class="btn" href="/admin/cabang?baru=1">
+        Tambah Cabang
+      </a>
+    </div>
+  )}
+</AdminLayout>

@@ -1,0 +1,286 @@
+---
+// Dashboard admin (PRD F-15, mockup Admin-Dashboard): ringkasan, 5 lead terbaru, aksi cepat,
+// dan hal yang perlu perhatian. Data diambil server-side saat request.
+import Icon from '@/components/ui/Icon';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  STATUS_BADGE,
+  STATUS_LABEL,
+  TYPE_LABEL,
+  formatLeadDate,
+  formatLeadTime,
+  leadWhatsAppUrl,
+} from '@/lib/admin/leads';
+import { loadDashboard } from '@/lib/admin/dashboard';
+import { formatPhoneDisplay } from '@/lib/whatsapp';
+
+export const prerender = false;
+
+const admin = Astro.locals.admin!;
+const data = await loadDashboard(Astro.locals.supabase);
+
+const today = new Intl.DateTimeFormat('id-ID', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'Asia/Jakarta',
+}).format(new Date());
+
+const publishWhen = data.lastPublish
+  ? `${formatLeadDate(data.lastPublish.created_at)}, ${formatLeadTime(data.lastPublish.created_at)}`
+  : null;
+
+const quick = [
+  { label: 'Ubah harga barber', href: '/admin/barber', icon: 'scissors' },
+  { label: 'Tambah atau edit cabang', href: '/admin/cabang', icon: 'pin' },
+  { label: 'Atur ketersediaan layanan', href: '/admin/layanan?tab=matriks', icon: 'lines' },
+  { label: 'Upload foto galeri', href: '/admin/galeri', icon: 'upload' },
+  { label: 'Edit template pesan WhatsApp', href: '/admin/pengaturan', icon: 'whatsapp' },
+  {
+    label: 'Ekspor leads (CSV)',
+    href: '/api/admin/leads/export',
+    icon: 'download',
+    download: true,
+  },
+];
+---
+
+<AdminLayout title="Dashboard" active="dashboard">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+    <div>
+      <h1 class="h1">Dashboard</h1>
+      <p style="margin:6px 0 0;font-size:14px;color:#5b6161">
+        {today} · Selamat datang kembali, {admin.full_name}.
+      </p>
+    </div>
+    <a class="btn" href="/admin/barber">
+      <Icon name="plus" size={18} />
+      Tambah Barber
+    </a>
+  </div>
+
+  <div class="stats">
+    <div class="card stat">
+      <p class="lbl">Cabang Aktif</p>
+      <p class="stat-n" data-stat="branches">
+        {data.activeBranches}
+      </p>
+      <p class="stat-s">
+        {data.regionCounts.bandung_raya} Bandung Raya · {data.regionCounts.jabodetabek} Jabodetabek
+      </p>
+    </div>
+    <div class="card stat">
+      <p class="lbl">Barber Aktif</p>
+      <p class="stat-n" data-stat="barbers">
+        {data.activeBarbers}
+      </p>
+      <p class="stat-s">Tersebar di {data.branchesWithBarbers} cabang</p>
+    </div>
+    <a
+      class="card stat stat-link"
+      href="/admin/leads?status=new"
+      aria-label={`Lead baru: ${data.newLeads.total}. Buka daftar lead baru.`}
+    >
+      <p class="lbl" style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+        Lead Baru
+        {data.newLeads.total > 0 && (
+          <span
+            class="bd b-warn"
+            style="letter-spacing:0;text-transform:none;font-family:'DM Sans',sans-serif"
+          >
+            Perlu dihubungi
+          </span>
+        )}
+      </p>
+      <p class="stat-n" data-stat="new-leads">
+        {data.newLeads.total}
+      </p>
+      <p class="stat-s">
+        {data.newLeads.academy} Academy · {data.newLeads.partnership} Kemitraan
+      </p>
+    </a>
+    <div class="card stat">
+      <p class="lbl">Publikasi Terakhir</p>
+      {data.lastPublish ? (
+        <>
+          <p class="stat-n" style="font-size:22px;line-height:1.2" data-stat="publish">
+            {publishWhen}
+          </p>
+          <p style="margin:0">
+            <span class={`bd ${data.lastPublish.status === 'failed' ? 'b-err' : 'b-ok'}`}>
+              {data.lastPublish.status === 'failed' ? 'Gagal' : 'Berhasil'}
+            </span>
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="stat-n" style="font-size:22px;line-height:1.2" data-stat="publish">
+            Belum pernah
+          </p>
+          <p class="stat-s">Perubahan tayang setelah dipublikasikan.</p>
+        </>
+      )}
+    </div>
+  </div>
+
+  <div class="dash">
+    <section class="card" aria-labelledby="ld-h" style="overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:16px 16px 14px">
+        <h2 id="ld-h" class="h3">
+          {data.latestLeads.length === 0
+            ? 'Lead Terbaru'
+            : `${data.latestLeads.length} Lead Terbaru`}
+        </h2>
+        <a
+          href="/admin/leads"
+          style="font-size:14px;font-weight:700;display:inline-flex;min-height:44px;align-items:center"
+        >
+          Lihat semua leads
+        </a>
+      </div>
+      {data.latestLeads.length === 0 ? (
+        <p style="margin:0;padding:8px 16px 28px;font-size:14px;color:#5b6161">
+          Belum ada lead. Lead muncul di sini setelah pengunjung mengisi form Academy atau
+          Kemitraan.
+        </p>
+      ) : (
+        <>
+          <div class="only-lg" role="table" aria-label="Lead terbaru">
+            <div role="row" class="thr dash-grid">
+              <span role="columnheader">Tanggal</span>
+              <span role="columnheader">Nama</span>
+              <span role="columnheader">Jenis</span>
+              <span role="columnheader">Kota</span>
+              <span role="columnheader">Status</span>
+              <span role="columnheader" style="text-align:right">
+                Aksi
+              </span>
+            </div>
+            {data.latestLeads.map((lead) => (
+              <div role="row" class="tr dash-grid" data-lead-id={lead.id}>
+                <span role="cell" style="color:#5b6161;white-space:nowrap;font-size:13px">
+                  {formatLeadDate(lead.created_at)}, {formatLeadTime(lead.created_at)}
+                </span>
+                <span role="cell" style="font-weight:700;overflow-wrap:anywhere">
+                  {lead.full_name}
+                </span>
+                <span role="cell">{TYPE_LABEL[lead.type]}</span>
+                <span role="cell">{lead.city}</span>
+                <span role="cell">
+                  <span class={`bd ${STATUS_BADGE[lead.status]}`}>{STATUS_LABEL[lead.status]}</span>
+                </span>
+                <span role="cell" style="text-align:right;white-space:nowrap">
+                  <a
+                    class="btn-o btn-sm"
+                    href={leadWhatsAppUrl(lead)}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label={`Chat WA ${lead.full_name}`}
+                  >
+                    Chat WA
+                  </a>{' '}
+                  <a
+                    class="btn-o btn-sm"
+                    href={`/admin/leads?type=${lead.type}&id=${lead.id}`}
+                    aria-label={`Detail ${lead.full_name}`}
+                  >
+                    Detail
+                  </a>
+                </span>
+              </div>
+            ))}
+          </div>
+          <div class="only-sm" style="padding:0 12px 12px">
+            {data.latestLeads.map((lead) => (
+              <article
+                class="card"
+                style="padding:14px;display:flex;flex-direction:column;gap:10px"
+                data-lead-id={lead.id}
+              >
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                  <div style="min-width:0">
+                    <h3 style="margin:0;font-family:'Montserrat',sans-serif;font-weight:700;font-size:16px;overflow-wrap:anywhere">
+                      {lead.full_name}
+                    </h3>
+                    <p style="margin:4px 0 0;font-size:13px;color:#5b6161">
+                      {TYPE_LABEL[lead.type]} · {formatLeadDate(lead.created_at)},{' '}
+                      {formatLeadTime(lead.created_at)} · {lead.city}
+                    </p>
+                  </div>
+                  <span class={`bd ${STATUS_BADGE[lead.status]}`}>{STATUS_LABEL[lead.status]}</span>
+                </div>
+                <p style="margin:0;font-size:14px;font-variant-numeric:tabular-nums">
+                  {formatPhoneDisplay(lead.whatsapp_number)}
+                </p>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+                  <a
+                    class="btn"
+                    href={leadWhatsAppUrl(lead)}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label={`Chat WA ${lead.full_name}`}
+                  >
+                    <Icon name="whatsapp" size={18} />
+                    Chat WA
+                  </a>
+                  <a
+                    class="btn-o"
+                    href={`/admin/leads?type=${lead.type}&id=${lead.id}`}
+                    aria-label={`Detail ${lead.full_name}`}
+                  >
+                    Detail
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <section class="card" aria-labelledby="qa-h">
+        <h2 id="qa-h" class="h3" style="padding:16px">
+          Aksi Cepat
+        </h2>
+        <nav aria-label="Aksi cepat">
+          {quick.map((item) => (
+            <a class="qa" href={item.href} download={item.download ? '' : undefined}>
+              <Icon name={item.icon} size={20} />
+              {item.label}
+              <span style="margin-left:auto;color:#8a9090;display:inline-flex">
+                <Icon name="chevron-right" size={18} />
+              </span>
+            </a>
+          ))}
+        </nav>
+      </section>
+
+      <section
+        class="card"
+        aria-labelledby="att-h"
+        style="padding:16px;display:flex;flex-direction:column;gap:12px"
+      >
+        <h2 id="att-h" class="h3">
+          Perlu Perhatian
+        </h2>
+        {data.attention.length === 0 ? (
+          <p style="margin:0;display:flex;gap:10px;font-size:14px;line-height:1.45;color:#22603b">
+            <Icon name="check-circle" size={18} />
+            Tidak ada yang perlu ditindaklanjuti.
+          </p>
+        ) : (
+          data.attention.map((item) => (
+            <p style="margin:0;display:flex;gap:10px;font-size:14px;line-height:1.45;align-items:flex-start">
+              <span class="bd b-warn" style="flex:none">
+                {item.tag}
+              </span>
+              {item.text}
+            </p>
+          ))
+        )}
+      </section>
+    </div>
+  </div>
+</AdminLayout>

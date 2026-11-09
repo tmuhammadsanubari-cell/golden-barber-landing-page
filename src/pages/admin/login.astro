@@ -1,0 +1,52 @@
+---
+// Halaman login admin (PRD F-14, mockup Admin-Login).
+import LoginForm from '@/components/admin/LoginForm';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { safeAdminRedirect } from '@/lib/api/redirect';
+
+export const prerender = false;
+
+const redirect = safeAdminRedirect(Astro.url.searchParams.get('redirect'));
+// Sudah login sebagai admin aktif: langsung ke tujuan.
+if (Astro.locals.admin) return Astro.redirect(redirect);
+---
+
+<AdminLayout title="Masuk" bare>
+  <div class="auth">
+    <div class="auth-brand">
+      <div style="display:flex;align-items:center;gap:14px">
+        <img
+          src="/brand/logo-golden-barber-white.png"
+          alt="Golden Barber"
+          width="160"
+          height="24"
+          style="height:24px;width:auto"
+        />
+        <span aria-hidden="true" style="width:1px;height:32px;background:#4c5353"></span>
+        <span class="lbl" style="color:#c9cece">
+          Panel Admin
+        </span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <p style="margin:0;font-family:'Montserrat',sans-serif;font-weight:800;font-size:40px;line-height:1.1">
+          Kelola 11 cabang
+          <br />
+          dari satu tempat.
+        </p>
+        <p style="margin:0;font-size:16px;line-height:1.6;color:#c9cece;max-width:400px">
+          Perbarui harga barber, jam buka, layanan, galeri, dan pantau lead Academy &amp; Kemitraan.
+        </p>
+      </div>
+      <p style="margin:0;font-size:13px;color:#a3aaaa">
+        Choose Your Haircut{' '}
+        <span aria-hidden="true" style="color:#6e7676">
+          |
+        </span>{' '}
+        The Winner's Cut
+      </p>
+    </div>
+    <main class="auth-main">
+      <LoginForm client:load redirect={redirect} />
+    </main>
+  </div>
+</AdminLayout>

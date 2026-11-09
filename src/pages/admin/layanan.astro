@@ -1,0 +1,80 @@
+---
+// Layanan (PRD F-18, mockup Admin-Layanan & Admin-Layanan-Matriks). Dua tab lewat ?tab=:
+// katalog (default) dan ketersediaan. Isi tiap tab adalah island React.
+import ServiceCatalog from '@/components/admin/ServiceCatalog';
+import ServiceMatrix from '@/components/admin/ServiceMatrix';
+import Icon from '@/components/ui/Icon';
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { listBranchItems } from '@/lib/admin/branches-db';
+import { listAvailability, listServices } from '@/lib/admin/services-db';
+
+export const prerender = false;
+
+const { supabase } = Astro.locals;
+const tab = Astro.url.searchParams.get('tab') === 'ketersediaan' ? 'ketersediaan' : 'katalog';
+const openAdd = tab === 'katalog' && Astro.url.searchParams.get('baru') === '1';
+
+const [services, branches, availability] = await Promise.all([
+  listServices(supabase),
+  tab === 'ketersediaan' ? listBranchItems(supabase) : Promise.resolve([]),
+  tab === 'ketersediaan' ? listAvailability(supabase) : Promise.resolve([]),
+]);
+
+const tabs = [
+  { key: 'katalog', label: 'Katalog Layanan', href: '/admin/layanan' },
+  {
+    key: 'ketersediaan',
+    label: 'Ketersediaan per Cabang',
+    href: '/admin/layanan?tab=ketersediaan',
+  },
+];
+---
+
+<AdminLayout title="Layanan" active="layanan">
+  <div class="page-head">
+    <div>
+      <h1 class="h1">Layanan</h1>
+      <p class="page-sub">
+        {tab === 'katalog'
+          ? 'Katalog berlaku untuk semua cabang. Status per cabang diatur di tab Ketersediaan.'
+          : 'Atur status setiap layanan di setiap cabang. Status tampil sebagai badge di halaman cabang.'}
+      </p>
+    </div>
+    {tab === 'katalog' && (
+      <a class="btn" href="/admin/layanan?baru=1">
+        <Icon name="plus" size={16} />
+        Tambah Layanan
+      </a>
+    )}
+  </div>
+
+  <nav class="tabs" aria-label="Bagian layanan">
+    {tabs.map((item) => (
+      <a class="tab" href={item.href} aria-current={item.key === tab ? 'page' : undefined}>
+        {item.label}
+      </a>
+    ))}
+  </nav>
+
+  {tab === 'katalog' ? (
+    <ServiceCatalog client:load items={services} openAdd={openAdd} />
+  ) : (
+    <ServiceMatrix
+      client:load
+      services={services}
+      branches={branches.map((branch) => ({
+        id: branch.id,
+        name: branch.name,
+        region: branch.region,
+        is_active: branch.is_active,
+      }))}
+      cells={availability.map((row) => ({
+        branch_id: row.branch_id,
+        service_id: row.service_id,
+        status: row.status,
+        price_override_min: row.price_override_min,
+        price_override_max: row.price_override_max,
+      }))}
+    />
+  )}
+</AdminLayout>

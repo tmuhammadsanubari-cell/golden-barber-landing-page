@@ -8,6 +8,20 @@ const waText = async (page: Page, selector: string) => {
 };
 
 const pricelist = (page: Page) => page.locator('#harga');
+
+/** Cegat POST /api/leads supaya e2e tidak menulis lead sungguhan ke database. */
+async function mockLeads(
+  page: Page,
+  status = 201,
+  body: unknown = { success: true, data: { id: 'x' } },
+) {
+  const sent: unknown[] = [];
+  await page.route('**/api/leads', async (route) => {
+    sent.push(route.request().postDataJSON());
+    await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
+  });
+  return sent;
+}
 const waitHydrated = (page: Page) =>
   expect(page.locator('#harga astro-island').first()).not.toHaveAttribute('ssr', '');
 
@@ -156,6 +170,7 @@ test.describe('landing page', () => {
   });
 
   test('form Academy: error per field, lalu sukses + lanjut WA', async ({ page }) => {
+    const sent = await mockLeads(page);
     const academy = page.locator('#academy');
     await academy.scrollIntoViewIfNeeded();
     await expect(academy.locator('astro-island')).not.toHaveAttribute('ssr', '');
@@ -174,9 +189,61 @@ test.describe('landing page', () => {
     await expect(link).toHaveAttribute('data-wa-context', 'academy');
     const href = await link.getAttribute('href');
     expect(decodeURIComponent(href!)).toContain('saya Budi Santoso baru saja mengisi form minat');
+    // Payload ke server: nomor sudah dinormalisasi, honeypot kosong, halaman asal terkirim.
+    expect(sent).toHaveLength(1);
+    expect(sent[0]).toMatchObject({
+      type: 'academy',
+      full_name: 'Budi Santoso',
+      whatsapp_number: '6281234567890',
+      city: 'Bandung',
+      consent: true,
+      website: '',
+      source_path: '/',
+    });
+  });
+
+  async function fillAcademy(page: Page) {
+    const academy = page.locator('#academy');
+    await academy.scrollIntoViewIfNeeded();
+    await expect(academy.locator('astro-island')).not.toHaveAttribute('ssr', '');
+    await academy.getByLabel('Nama lengkap').fill('Budi Santoso');
+    await academy.getByLabel('Nomor WhatsApp').fill('081234567890');
+    await academy.getByLabel('Kota domisili').fill('Bandung');
+    await academy.getByLabel(/Saya setuju/).check();
+    await academy.getByRole('button', { name: 'Kirim Minat' }).click();
+    return academy;
+  }
+
+  test('form Academy: server menolak (429) → pesan + tombol WA, form tetap ada', async ({
+    page,
+  }) => {
+    await mockLeads(page, 429, {
+      success: false,
+      error: {
+        code: 'RATE_LIMITED',
+        message: 'Terlalu banyak percobaan, coba lagi nanti.',
+        details: {},
+      },
+    });
+    const academy = await fillAcademy(page);
+    await expect(academy.getByRole('alert')).toContainText(
+      'Terlalu banyak percobaan, coba lagi nanti.',
+    );
+    await expect(academy.getByRole('link', { name: 'Hubungi via WhatsApp' })).toBeVisible();
+    await expect(academy.getByRole('button', { name: 'Kirim Minat' })).toBeEnabled();
+  });
+
+  test('form Academy: jaringan putus → pesan koneksi + tombol WA', async ({ page }) => {
+    await page.route('**/api/leads', (route) => route.abort('failed'));
+    const academy = await fillAcademy(page);
+    await expect(academy.getByRole('alert')).toContainText(
+      'Koneksi bermasalah. Coba lagi atau hubungi kami via WhatsApp.',
+    );
+    await expect(academy.getByRole('link', { name: 'Hubungi via WhatsApp' })).toBeVisible();
   });
 
   test('form Kemitraan: sukses + lanjut WA', async ({ page }) => {
+    await mockLeads(page);
     const section = page.locator('#kemitraan');
     await section.scrollIntoViewIfNeeded();
     await expect(section.locator('astro-island')).not.toHaveAttribute('ssr', '');
