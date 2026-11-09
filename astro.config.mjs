@@ -20,6 +20,8 @@ export default defineConfig({
   adapter: vercel(), // rute dengan `export const prerender = false` jadi Vercel Functions
   integrations: [react(), sitemap({ filter: (page) => !page.includes('/admin') })],
   security: { checkOrigin: true },
+  // CSS halaman (±10 KB) disisipkan ke <head>: satu permintaan pemblokir render lebih sedikit (D-39).
+  build: { inlineStylesheets: 'always' },
   image: {
     remotePatterns: [{ protocol: 'https', hostname: '*.supabase.co' }],
   },

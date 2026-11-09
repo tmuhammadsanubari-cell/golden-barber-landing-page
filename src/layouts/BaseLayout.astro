@@ -1,5 +1,9 @@
 ---
+import '@/styles/fonts.css';
 import '@/styles/global.css';
+// Font teks utama dan judul hero dimuat lebih awal (D-39).
+import dmSans400 from '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2?url';
+import montserrat800 from '@fontsource/montserrat/files/montserrat-latin-800-normal.woff2?url';
 
 interface Props {
   title: string;
@@ -30,12 +34,8 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Jost:wght@300;400;500&family=Montserrat:wght@700;800&display=swap"
-    />
+    <link rel="preload" href={dmSans400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={montserrat800} as="font" type="font/woff2" crossorigin />
     <slot name="head" />
   </head>
   <body class="concrete">
