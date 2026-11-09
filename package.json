@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "test:db": "vitest run --config vitest.integration.config.ts",
     "format": "prettier --write .",
-    "seed:build": "tsx scripts/build-seed-sql.ts"
+    "seed:build": "tsx scripts/build-seed-sql.ts",
+    "check:bundle": "node scripts/check-bundle.mjs"
   },
   "type": "module",
   "dependencies": {
