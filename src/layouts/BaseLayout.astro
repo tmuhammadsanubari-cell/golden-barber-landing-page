@@ -4,6 +4,7 @@ import '@/styles/global.css';
 // Font teks utama dan judul hero dimuat lebih awal (D-39).
 import dmSans400 from '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2?url';
 import montserrat800 from '@fontsource/montserrat/files/montserrat-latin-800-normal.woff2?url';
+import { isPrototype } from '@/lib/site-mode';
 
 interface Props {
   title: string;
@@ -14,6 +15,9 @@ interface Props {
 }
 
 const { title, description, ogImage = '/brand/og-default.jpg', noindex = false } = Astro.props;
+// Mode prototipe (D-41): semua halaman noindex + banner. Canonical tetap ada agar beralih ke
+// mode live cukup mengganti env, tanpa mengubah markup lain.
+const prototype = isPrototype();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(ogImage, Astro.site);
 ---
@@ -25,7 +29,8 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {(noindex || prototype) && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="id_ID" />
@@ -39,6 +44,18 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <slot name="head" />
   </head>
   <body class="concrete">
+    {
+      prototype && (
+        <aside
+          aria-label="Pemberitahuan prototipe"
+          data-prototype-banner
+          class="bg-dark px-4 py-2 text-center font-label text-[13px] leading-snug text-dark-text"
+        >
+          <strong class="font-semibold text-white">Prototipe</strong> untuk penawaran kepada Golden
+          Barber Indonesia. Bukan situs resmi.
+        </aside>
+      )
+    }
     <slot />
   </body>
 </html>
