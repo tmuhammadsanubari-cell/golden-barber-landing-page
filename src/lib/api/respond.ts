@@ -1,6 +1,7 @@
 // Envelope respons API (PRD 4.3 & 4.5). Semua pesan untuk pengguna dalam Bahasa Indonesia;
 // detail teknis hanya ke log server.
-import type { ZodError } from 'zod';
+// `$ZodError` = dasar bersama `zod` (skema admin) dan `zod/mini` (skema lead publik, D-38).
+import type { $ZodError as ZodError } from 'zod/v4/core';
 
 export type ErrorCode =
   | 'VALIDATION_ERROR'

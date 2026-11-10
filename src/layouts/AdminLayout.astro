@@ -1,6 +1,7 @@
 ---
 // Kerangka panel admin (mockup Admin-Dashboard & Admin-State): sidebar gelap, header,
 // slot konten. `bare` = tanpa sidebar/header (halaman login & reset password).
+import '@/styles/fonts.css';
 import '@/styles/admin.css';
 import PublishBarHost from '@/components/admin/PublishBarHost';
 import ToastHost from '@/components/admin/ToastHost';
@@ -66,12 +67,6 @@ const initials = (admin?.full_name ?? '')
     <meta name="robots" content="noindex, nofollow" />
     <title>{title} — Admin Golden Barber</title>
     <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Jost:wght@300;400;500&family=Montserrat:wght@700;800&display=swap"
-    />
     <slot name="head" />
   </head>
   <body>

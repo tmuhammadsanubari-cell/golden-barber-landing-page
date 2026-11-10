@@ -1,5 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+// Logo asli (salinan public/brand) lewat astro:assets agar jadi WebP kecil (D-39).
+import logo from '@/assets/brand/logo-golden-barber.png';
 import Icon from '@/components/ui/Icon';
 import { formatHours } from '@/lib/format';
 import { whatsAppLinkProps } from '@/lib/whatsapp';
@@ -33,26 +35,31 @@ const menu = [
   class="sticky top-0 z-20 border-b border-line bg-[rgba(236,236,236,0.96)] data-[scrolled]:bg-bg"
 >
   <div class="wrap flex h-16 items-center gap-2 !pr-4 !pl-5 lg:h-[76px] lg:justify-between lg:gap-6">
-    <a href={home ? '#top' : '/'} aria-label="Golden Barber Indonesia — beranda" class="mr-auto inline-flex min-h-11 min-w-0 items-center lg:mr-0">
+    <a
+      href={home ? '#top' : '/'}
+      aria-label="Golden Barber Indonesia — beranda"
+      class="mr-auto inline-flex min-h-11 min-w-0 items-center lg:mr-0"
+    >
       <Image
-        src="/brand/logo-golden-barber.png"
+        src={logo}
         alt="Golden Barber"
-        width={902}
-        height={136}
+        width={200}
+        densities={[1, 2]}
         loading="eager"
         class="h-5 w-auto lg:h-[30px]"
       />
     </a>
     <nav aria-label="Menu utama" class="hidden items-center gap-0.5 lg:flex">
-      {
-        menu.map((item) => (
-          <a class="nl" href={item.href}>
-            {item.label}
-          </a>
-        ))
-      }
+      {menu.map((item) => (
+        <a class="nl" href={item.href}>
+          {item.label}
+        </a>
+      ))}
     </nav>
-    <a class="btn btn-s shrink-0 !gap-1.5 lg:!min-h-12 lg:!gap-2.5 lg:!px-[22px] lg:!text-base" {...wa}>
+    <a
+      class="btn btn-s shrink-0 !gap-1.5 lg:!min-h-12 lg:!gap-2.5 lg:!px-[22px] lg:!text-base"
+      {...wa}
+    >
       <Icon name="whatsapp" size={18} />
       Booking via WA
     </a>
@@ -78,26 +85,18 @@ const menu = [
   class="concrete fixed inset-0 z-40 flex flex-col overflow-y-auto px-5 pb-7 lg:hidden"
 >
   <div class="-mr-1 flex h-16 shrink-0 items-center justify-between">
-    <Image
-      src="/brand/logo-golden-barber.png"
-      alt="Golden Barber"
-      width={902}
-      height={136}
-      class="h-5 w-auto"
-    />
+    <Image src={logo} alt="Golden Barber" width={200} densities={[1, 2]} class="h-5 w-auto" />
     <button type="button" id="drawer-close" class="ic" aria-label="Tutup menu">
       <Icon name="close" />
     </button>
   </div>
   <nav aria-label="Menu utama" class="mt-4 border-t border-line">
-    {
-      menu.map((item) => (
-        <a class="dl" href={item.href}>
-          {item.label}
-          <Icon name="chevron-right" />
-        </a>
-      ))
-    }
+    {menu.map((item) => (
+      <a class="dl" href={item.href}>
+        {item.label}
+        <Icon name="chevron-right" />
+      </a>
+    ))}
   </nav>
   <div class="mt-auto flex flex-col gap-3 pt-6">
     <a class="btn btn-l" {...wa}>

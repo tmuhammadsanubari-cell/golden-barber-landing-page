@@ -1,0 +1,13 @@
+/*
+ * Font di-host sendiri lewat @fontsource (subset latin saja), bukan Google Fonts: stylesheet
+ * Google memblokir render ±0,8 dtk di Lighthouse mobile (M4, D-39). Bobot sama dengan tautan
+ * Google Fonts sebelumnya. Nama keluarga tetap 'DM Sans', 'Jost', 'Montserrat' (token di global.css).
+ */
+@import '@fontsource/dm-sans/latin-400.css';
+@import '@fontsource/dm-sans/latin-500.css';
+@import '@fontsource/dm-sans/latin-700.css';
+@import '@fontsource/jost/latin-300.css';
+@import '@fontsource/jost/latin-400.css';
+@import '@fontsource/jost/latin-500.css';
+@import '@fontsource/montserrat/latin-700.css';
+@import '@fontsource/montserrat/latin-800.css';

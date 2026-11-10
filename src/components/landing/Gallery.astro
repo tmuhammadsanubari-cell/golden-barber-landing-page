@@ -14,12 +14,7 @@ const { items } = Astro.props;
 
 <section id="galeri" aria-labelledby="gal-h" class="border-y border-line lg:bg-alt">
   <div class="wrap py-12 lg:py-24">
-    <SectionHeading
-      id="gal-h"
-      label="Galeri"
-      tagline="Model rambut"
-      class="mb-4 lg:mb-10"
-    >
+    <SectionHeading id="gal-h" label="Galeri" tagline="Model rambut" class="mb-4 lg:mb-10">
       Inspirasi buat konsultasi.
       <p slot="aside" class="body-text hidden max-w-[420px] lg:block">
         Tunjukkan model yang kamu suka ke barber — mereka bantu sesuaikan.
@@ -27,34 +22,34 @@ const { items } = Astro.props;
     </SectionHeading>
 
     <div class="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-5">
-      {
-        items.map((item, index) => (
-          <figure class="m-0 overflow-hidden rounded-gb border border-line bg-surface">
-            <button
-              type="button"
-              class="ph relative block aspect-square w-full p-0"
-              data-lightbox-index={index}
-              aria-label={`Perbesar foto ${item.title}`}
-            >
-              <Image
-                src={item.image_path}
-                alt={item.alt_text}
-                width={300}
-                height={300}
-                class="size-full object-cover"
-              />
-              {item.is_placeholder && (
+      {items.map((item, index) => (
+        <figure class="m-0 overflow-hidden rounded-gb border border-line bg-surface">
+          <button
+            type="button"
+            class="ph relative block aspect-square w-full p-0"
+            data-lightbox-index={index}
+            aria-label={`Perbesar foto ${item.title}${item.is_placeholder ? ' (Ilustrasi)' : ''}`}
+          >
+            <Image
+              src={item.image_path}
+              alt={item.alt_text}
+              width={300}
+              height={300}
+              class="size-full object-cover"
+            />
+            {item.is_placeholder && (
+              <span aria-hidden="true">
                 <Badge variant="photo" className="absolute top-2.5 left-2.5 lg:top-3.5 lg:left-3.5">
                   Ilustrasi
                 </Badge>
-              )}
-            </button>
-            <figcaption class="min-h-14 px-3 py-2.5 font-display text-sm leading-[1.3] font-bold lg:min-h-0 lg:px-4 lg:py-3.5 lg:text-base">
-              {item.title}
-            </figcaption>
-          </figure>
-        ))
-      }
+              </span>
+            )}
+          </button>
+          <figcaption class="min-h-14 px-3 py-2.5 font-display text-sm leading-[1.3] font-bold lg:min-h-0 lg:px-4 lg:py-3.5 lg:text-base">
+            {item.title}
+          </figcaption>
+        </figure>
+      ))}
     </div>
   </div>
 </section>
@@ -89,15 +84,17 @@ const { items } = Astro.props;
   </div>
 </dialog>
 
-<script is:inline type="application/json" id="lightbox-data" set:html={JSON.stringify(items).replace(/</g, '\u003c')} />
-
+<script
+  is:inline
+  type="application/json"
+  id="lightbox-data"
+  set:html={JSON.stringify(items).replace(/</g, '\u003c')}
+/>
 <script>
   import type { GalleryItem } from '@/types/content';
 
   const dialog = document.getElementById('lightbox') as HTMLDialogElement;
-  const items = JSON.parse(
-    document.getElementById('lightbox-data')!.textContent!,
-  ) as GalleryItem[];
+  const items = JSON.parse(document.getElementById('lightbox-data')!.textContent!) as GalleryItem[];
   const image = document.getElementById('lightbox-image') as HTMLImageElement;
   const title = document.getElementById('lightbox-title')!;
   const description = document.getElementById('lightbox-description')!;
